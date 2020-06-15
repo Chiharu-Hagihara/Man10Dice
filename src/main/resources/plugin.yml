@@ -1,7 +1,9 @@
 name: Man10Dice
-version: ${project.version}
+version: 1.15
 main: chiharu.hagihara.man10dice.Man10Dice
-api-version: 1.13
-author: Mr_El_Capitan
+api-version: 1.15
+authors:
+  - Mr_El_Capitan
+  - testusuke
 commands:
   mdice:
