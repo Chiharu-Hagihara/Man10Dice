@@ -40,7 +40,21 @@ class Man10Dice : JavaPlugin() {
 
         if (args.isEmpty() || args[0] == "help") {
             showHelp(p)
-        } else {
+        } else if (args[0] == "rangeset") {
+            var r: Int = 0
+            try {
+                r = args[1].toInt()
+            } catch (e: NumberFormatException) {
+                sender.sendMessage("$prefix§6エラーです。")
+                return false
+            }
+            if (r <= 0) {
+                sender.sendMessage("$prefix§c1以上で指定してください。")
+                return false
+            }
+            plugin.radius = r
+            sender.sendMessage("$prefix§a半径を${r}に設定しました。")
+        }else {
             val put = args[0].toInt()
             if (put <= 0) {
                 p.sendMessage(("$prefix§c１以上の数字を入力してください！"))
@@ -51,35 +65,17 @@ class Man10Dice : JavaPlugin() {
                     return true
                 }
                 waitstart()
-            } else {
-                when (args[1]) {
-                    "local" -> {
-                        rollLocalDice(p, 1, put)
-                    }
-                    "global" -> {
-                        rollGlobalDice(p, 1, put)
-                    }
-                    "rangeset" -> {
-                        var r: Int = 0
-                        try {
-                            r = args[1].toInt()
-                        }catch (e:NumberFormatException){
-                            sender.sendMessage("$prefix§6エラーです。")
-                            return false
-                        }
-                        if(r <= 0){
-                            sender.sendMessage("$prefix§c1以上で指定してください。")
-                            return false
-                        }
-                        plugin.radius = r
-                        sender.sendMessage("$prefix§a半径を${r}に設定しました。")
-                    }
-                    else -> {
-                        rollGlobalDice(p, 1, put)
-                    }
+            } else when (args[1]) {
+                "local" -> {
+                    rollLocalDice(p, 1, put, plugin)
+                }
+                "global" -> {
+                    rollGlobalDice(p, 1, put)
+                }
+                else -> {
+                    rollGlobalDice(p, 1, put)
                 }
             }
-            return true
         }
         return true
     }
