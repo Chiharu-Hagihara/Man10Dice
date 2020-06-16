@@ -48,7 +48,6 @@ class Man10Dice : JavaPlugin() {
                 showHelp(p)
             }
             "local" -> {
-                if(!canDice(args,sender,1))return false
                 if (p.hasPermission("mdice.local")) {
                     val put = args[1].toInt()
                         if (put <= 0) {
@@ -65,7 +64,6 @@ class Man10Dice : JavaPlugin() {
                 }
             }
             "global" -> {
-                if(!canDice(args,sender,1))return false
                 if (p.hasPermission("mdice.global")) {
                     val put = args[1].toInt()
                         if (put <= 0) {
@@ -138,24 +136,6 @@ class Man10Dice : JavaPlugin() {
             }
         }
         return 0
-    }
-
-    private fun canDice(args: Array<out String>,p: Player,start:Int):Boolean{
-        val max = start + 1
-        if(args.size == max){
-            showHelp(p)
-            return false
-        }
-        //  正規表現
-        if(!checkNumber(args[start])){
-            showHelp(p)
-            return false
-        }
-
-        return true
-    }
-    private fun checkNumber(s: String): Boolean {
-        return NumberUtils.isNumber(s)
     }
 
 }
