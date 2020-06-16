@@ -1,6 +1,7 @@
 package chiharu.hagihara.man10dice
 
 import net.md_5.bungee.api.ChatColor
+import org.apache.commons.lang.math.NumberUtils
 import org.bukkit.Bukkit
 import org.bukkit.command.Command
 import org.bukkit.command.CommandSender
@@ -19,6 +20,7 @@ class Man10Dice : JavaPlugin() {
             e.printStackTrace()
             50
         }
+        getCommand("mdice")?.setExecutor(this)
     }
 
     override fun onDisable() {
@@ -45,54 +47,36 @@ class Man10Dice : JavaPlugin() {
             "help" -> {
                 showHelp(p)
             }
-
-            "rangeset" -> {
-                if (p.hasPermission("mdice.op")) {
-                    val r: Int
-                    try {
-                        r = args[1].toInt()
-                    } catch (e: NumberFormatException) {
-                        sender.sendMessage("$prefix§6エラーです。")
-                        return false
-                    }
-                    if (r <= 0) {
-                        sender.sendMessage("$prefix§c1以上で指定してください。")
-                        return false
-                    }
-                    plugin.radius = r
-                    sender.sendMessage("$prefix§a半径を${r}に設定しました。")
-                }else {
-                    p.sendMessage("$prefix §4§lYou don't have permission.")
-                }
-            }
             "local" -> {
+                if(!canDice(args,sender,1))return false
                 if (p.hasPermission("mdice.local")) {
                     val put = args[1].toInt()
-                    if (put <= 0) {
-                        p.sendMessage(("$prefix§c１以上の数字を入力してください！"))
-                    } else if (!p.hasPermission("mdice.op")) {
-                        if (waittime) {
-                            p.sendMessage(("$prefix§c現在クールタイム中です！"))
+                        if (put <= 0) {
+                            p.sendMessage(("$prefix§c１以上の数字を入力してください！"))
+                        } else if (!p.hasPermission("mdice.op")) {
+                            if (waittime) {
+                                p.sendMessage(("$prefix§c現在クールタイム中です！"))
+                            }
+                            waitstart()
                         }
-                        waitstart()
-                    }
-                    rollLocalDice(p, 1, put, plugin)
+                        rollLocalDice(p, 1, put, plugin)
                 } else {
                     p.sendMessage("$prefix §4§lYou don't have permission.")
                 }
             }
             "global" -> {
+                if(!canDice(args,sender,1))return false
                 if (p.hasPermission("mdice.global")) {
                     val put = args[1].toInt()
-                    if (put <= 0) {
-                        p.sendMessage(("$prefix§c１以上の数字を入力してください！"))
-                    } else if (!p.hasPermission("mdice.op")) {
-                        if (waittime) {
-                            p.sendMessage(("$prefix§c現在クールタイム中です！"))
+                        if (put <= 0) {
+                            p.sendMessage(("$prefix§c１以上の数字を入力してください！"))
+                        } else if (!p.hasPermission("mdice.op")) {
+                            if (waittime) {
+                                p.sendMessage(("$prefix§c現在クールタイム中です！"))
+                            }
+                            waitstart()
                         }
-                        waitstart()
-                    }
-                    rollGlobalDice(p, 1, put)
+                        rollGlobalDice(p, 1, put)
                 } else {
                     p.sendMessage("$prefix §4§lYou don't have permission.")
                 }
@@ -154,6 +138,24 @@ class Man10Dice : JavaPlugin() {
             }
         }
         return 0
+    }
+
+    private fun canDice(args: Array<out String>,p: Player,start:Int):Boolean{
+        val max = start + 1
+        if(args.size == max){
+            showHelp(p)
+            return false
+        }
+        //  正規表現
+        if(!checkNumber(args[start])){
+            showHelp(p)
+            return false
+        }
+
+        return true
+    }
+    private fun checkNumber(s: String): Boolean {
+        return NumberUtils.isNumber(s)
     }
 
 }
