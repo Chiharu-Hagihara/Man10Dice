@@ -11,6 +11,12 @@ import java.util.*
 
 
 class Man10Dice : JavaPlugin() {
+
+    /**
+     * Created By Mr_El_Capitan
+     * その他いろいろ教えてくださった方々 （感謝）
+     */
+
     override fun onEnable() {
         // Plugin startup logic
         this.saveDefaultConfig()
@@ -21,6 +27,8 @@ class Man10Dice : JavaPlugin() {
             50
         }
         getCommand("mdice")?.setExecutor(this)
+
+        plugin = this
     }
 
     override fun onDisable() {
@@ -59,7 +67,7 @@ class Man10Dice : JavaPlugin() {
                             }
                             waitstart()
                         }
-                        rollLocalDice(p, 1, put, plugin)
+                        rollLocalDice(p, put, plugin)
                 } else {
                     p.sendMessage("$prefix §4§lYou don't have permission.")
                 }
@@ -129,12 +137,13 @@ class Man10Dice : JavaPlugin() {
         return result
     }
 
-    fun rollLocalDice(p: Player, min: Int, max: Int, plugin: Man10Dice): Int {
+    fun rollLocalDice(sender: CommandSender, p: Player, min: Int, max: Int, plugin: Man10Dice): Int {
         for (players in p.getNearbyEntities(plugin.radius.toDouble(), plugin.radius.toDouble(), plugin.radius.toDouble())) {
             if (players is Player) {
                 val result = rollDice(min, max)
+                sender.sendMessage((prefix + "§3§l" + p.displayName + "§3§lは§l" + ChatColor.YELLOW + "§l" + max + "§3§l面サイコロを振って" + ChatColor.YELLOW + "§l" + result + "§3§lが出た"))
                 p.sendMessage((prefix + "§3§l" + p.displayName + "§3§lは§l" + ChatColor.YELLOW + "§l" + max + "§3§l面サイコロを振って" + ChatColor.YELLOW + "§l" + result + "§3§lが出た"))
-                return result
+                return continue
             }
         }
         return 0
