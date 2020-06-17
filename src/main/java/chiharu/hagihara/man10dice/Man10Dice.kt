@@ -1,8 +1,7 @@
 package chiharu.hagihara.man10dice
 
-import net.md_5.bungee.api.ChatColor
-import org.apache.commons.lang.math.NumberUtils
 import org.bukkit.Bukkit
+import net.md_5.bungee.api.ChatColor
 import org.bukkit.command.Command
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
@@ -12,104 +11,47 @@ import java.util.*
 
 class Man10Dice : JavaPlugin() {
 
-    /**
-     * Created By Mr_El_Capitan
-     * その他いろいろ教えてくださった方々 （感謝）
-     */
+    val prefix = "§l[§d§lM§f§la§a§ln§f§l10§5§lDice§f§l]"
 
     override fun onEnable() {
         // Plugin startup logic
-        this.saveDefaultConfig()
-        radius = try {
-            config.getInt("radius")
-        }catch (e:NullPointerException) {
-            e.printStackTrace()
-            50
-        }
         getCommand("mdice")?.setExecutor(this)
-
-        plugin = this
     }
 
     override fun onDisable() {
         // Plugin shutdown logic
-        config.set("radius",radius)
-        this.saveConfig()
     }
 
-    companion object{
-        lateinit var plugin: Man10Dice
-    }
-    var sleeptime = false
-    var radius:Int = 50
-    val prefix = "§l[§d§lM§f§la§a§ln§f§l10§5§lDice§f§l]"
     override fun onCommand(sender: CommandSender, command: Command, label: String, args: Array<out String>): Boolean {
         val p = sender as Player
+        val cmd = args[0]
+        val cmd1 = args[1]
 
-        if (args.isEmpty()) {
+        if (args.isEmpty()){
             showHelp(p)
             return false
         }
-        when (args[0]) {
-            "help" -> {
-                showHelp(p)
-            }
-            "local" -> {
-                if(!canDice(args,sender,1))return false
-                if (p.hasPermission("mdice.local")) {
-                    val put = args[1].toInt()
-                    if (put <= 0) {
-                        p.sendMessage(("$prefix§c１以上の数字を入力してください！"))
-                    }
-                    if (sleeptime) {
-                        p.sendMessage("$prefix §c§l現在ダイスを振っています！")
-                        return false
-                    }
-                    rollLocalDice(p, p, 1, put, plugin)
-                }else {
-                    p.sendMessage("$prefix §4§lYou don't have permission.")
-                }
-            }
-            "global" -> {
-                if(!canDice(args,sender,1))return false
-                if (p.hasPermission("mdice.global")) {
-                    val put = args[1].toInt()
-                    if (put <= 0) {
-                        p.sendMessage(("$prefix§c１以上の数字を入力してください！"))
-                    }
-                    if (sleeptime){
-                        p.sendMessage("$prefix §c§l現在ダイスを振っています！")
-                        return false
-                    }
-                    rollGlobalDice(p, 1, put)
-                }else {
-                    p.sendMessage("$prefix §4§lYou don't have permission.")
-                }
-            }
-            else -> {
-                p.sendMessage("$prefix §c§lコマンドが間違っています！")
-            }
+
+        if (cmd == "help"){
+            showHelp(p)
+            return true
         }
-        return true
+
+        if (cmd == "global"){
+            if (!p.hasPermission("mdice.global"))return false
+            if (args.size == 1)return false
+            val put = cmd1.toInt()
+            GlobalDice(p, 1, put)
+        }
+
+        return false
     }
 
-    fun showHelp(p: Player) {
-        if (p.hasPermission("mdice.local")|| p.hasPermission("mdice.global")|| p.hasPermission("mdice.op")) {
-            p.sendMessage("$prefix §e=====ヘルプメニュー=====")
-            if (p.hasPermission("mdice.local")) {
-                p.sendMessage("$prefix §f/mdice local [数字] : ダイスを設定された半径のなかにいるプレイヤーに通知します。")
-            }
-            if (p.hasPermission("mdice.global")){
-                p.sendMessage("$prefix §f/mdice global [数字] : ダイスを全体チャットで通知します。")
-            }
-            if (p.hasPermission("mdice.op")) {
-                p.sendMessage("$prefix §f/mdice rangeset [数字] : localdiceの通知範囲を設定します。")
-            }
-            p.sendMessage("$prefix §e=====================")
-            p.sendMessage("$prefix §fCreated By Mr_El_Capitan")
-        }else{
-            p.sendMessage("$prefix §4§lYou don't have permission.")
-        }
+    fun GlobalDice(p: Player, min: Int, max: Int): Int{
+        val result = rollDice(min, max)
+        Bukkit.broadcastMessage("$prefix §l${p.displayName}がダイスを振っています・・・§k§lxx")
+        Bukkit.broadcastMessage(("$prefix §3§l${p.displayName}§3§lは§l${ChatColor.YELLOW}§l${max}§3§l面サイコロを振って${ChatColor.YELLOW}§l${result}§3§lが出た"))
+        return result
     }
 
     fun rollDice(min: Int, max: Int): Int {
@@ -117,61 +59,8 @@ class Man10Dice : JavaPlugin() {
         return r.nextInt(max - min + 1) + min
     }
 
-    fun rollGlobalDice(p: Player, min: Int, max: Int): Int {
-        val result = rollDice(min, max)
-        if (sleeptime) {
-            Bukkit.broadcastMessage("$prefix §l${p.displayName}がダイスを振っています・・・§k§lxx")
-        }
-        sleepstart()
-        Bukkit.broadcastMessage(("$prefix §3§l${p.displayName}§3§lは§l${ChatColor.YELLOW}§l${max}§3§l面サイコロを振って${ChatColor.YELLOW}§l${result}§3§lが出た"))
-        return result
-    }
 
-    fun rollLocalDice(sender: CommandSender, p: Player, min: Int, max: Int, plugin: Man10Dice): Int {
-        for (players in p.getNearbyEntities(plugin.radius.toDouble(), plugin.radius.toDouble(), plugin.radius.toDouble())) {
-            if (players is Player) {
-                val result = rollDice(min, max)
-                if (sleeptime) {
-                    sender.sendMessage("$prefix §l${p.displayName}がダイスを振っています・・・§k§lxx")
-                    p.sendMessage("$prefix §l${p.displayName}がダイスを振っています・・・§k§lxx")
-                }
-                sleepstart()
-                sender.sendMessage(("$prefix §3§l${p.displayName}§3§lは§l${ChatColor.YELLOW}§l${max}§3§l面サイコロを振って${ChatColor.YELLOW}§l${result}§3§lが出た"))
-                p.sendMessage(("$prefix §3§l${p.displayName}§3§lは§l${ChatColor.YELLOW}§l${max}§3§l面サイコロを振って${ChatColor.YELLOW}§l${result}§3§lが出た"))
-                return continue
-            }
-        }
-        return 0
-    }
+    fun showHelp(p: Player){
 
-    // わざわざスリープにしなくてもイベントをキャンセルすればいい
-    fun sleepstart(){
-        sleeptime = true
-        Thread.sleep(3_000)  // wait for 5 second
-        sleeptime = false
     }
-
-    fun canDice(args: Array<out String>,p: Player,start:Int):Boolean{
-        val max = start + 1
-        if (args.size != max) {
-            p.sendMessage("$prefix §c§lコマンドが間違っています！")
-            return false
-        }
-        //  正規表現
-        if(!checkNumber(args[start])){
-            p.sendMessage("$prefix §c§lコマンドが間違っています！")
-            return false
-        }
-        if (args.isEmpty()){
-            p.sendMessage("$prefix §c§lコマンドが間違っています！")
-            return false
-        }
-        return true
-    }
-    private fun checkNumber(s: String): Boolean {
-        return NumberUtils.isNumber(s)
-    }
-
 }
-
-/// はっず
