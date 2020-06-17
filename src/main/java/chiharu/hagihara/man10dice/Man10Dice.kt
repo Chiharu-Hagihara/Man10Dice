@@ -8,6 +8,7 @@ import org.bukkit.command.CommandSender
 import org.bukkit.command.ConsoleCommandSender
 import org.bukkit.entity.Player
 import org.bukkit.plugin.java.JavaPlugin
+import org.bukkit.scheduler.BukkitRunnable
 import java.util.*
 
 
@@ -15,14 +16,28 @@ class Man10Dice : JavaPlugin() {
 
     val prefix = "§l[§d§lM§f§la§a§ln§f§l10§5§lDice§f§l]"
     var waittime = false
+    var radius:Int = 50
+
+    companion object{
+        lateinit var plugin:Man10Dice
+    }
 
     override fun onEnable() {
         // Plugin startup logic
         getCommand("mdice")?.setExecutor(this)
+        plugin = this
+        radius = try {
+            config.getInt("radius")
+        }catch (e:NullPointerException) {
+            e.printStackTrace()
+            50
+        }
     }
 
     override fun onDisable() {
         // Plugin shutdown logic
+        config.set("radius",radius)
+        this.saveConfig()
     }
 
     override fun onCommand(sender: CommandSender, command: Command, label: String, args: Array<out String>): Boolean {
@@ -48,28 +63,26 @@ class Man10Dice : JavaPlugin() {
         if (cmd == "global"){
             if (!p.hasPermission("mdice.global"))return false
             if (args.size == 1)return false
+            if (!canDice(args, 1))return false
             val put = args[1].toInt()
             if (waittime){
                 p.sendMessage("$prefix §c§lほかの人がサイコロを振っています！")
                 return false
             }
-            waittime = true
             GlobalDice(p, 1, put)
-            waittime = false
         }
 
         //localdice
         if (cmd == "local"){
             if (!p.hasPermission("mdice.local"))return false
             if (args.size == 1)return false
+            if (!canDice(args, 1))return false
             val put = args[1].toInt()
             if (waittime){
                 p.sendMessage("$prefix §c§lほかの人がサイコロを振っています！")
                 return false
             }
-            waittime = true
             LocalDice(p, 1, put)
-            waittime = false
         }
 
         return false
@@ -79,8 +92,13 @@ class Man10Dice : JavaPlugin() {
     fun GlobalDice(p: Player, min: Int, max: Int): Int{
         val result = rollDice(min, max)
         Bukkit.broadcastMessage("$prefix §l${p.displayName}がダイスを振っています・・・§k§lxx")
-        onWait()
-        Bukkit.broadcastMessage(("$prefix §3§l${p.displayName}§3§lは§l${ChatColor.YELLOW}§l${max}§3§l面サイコロを振って${ChatColor.YELLOW}§l${result}§3§lが出た"))
+        waittime = true
+        object: BukkitRunnable(){
+            override fun run(){
+                Bukkit.broadcastMessage(("$prefix §3§l${p.displayName}§3§lは§l${ChatColor.YELLOW}§l${max}§3§l面サイコロを振って${ChatColor.YELLOW}§l${result}§3§lが出た"))
+                waittime = false
+            }
+        }.runTaskLater(plugin,20*3)
         return result
     }
 
@@ -88,8 +106,13 @@ class Man10Dice : JavaPlugin() {
     fun LocalDice(p: Player, min: Int, max: Int): Int{
         val result = rollDice(min, max)
         Bukkit.broadcastMessage("$prefix §l${p.displayName}がダイスを振っています・・・§k§lxx")
-        onWait()
-        Bukkit.broadcastMessage(("$prefix §3§l${p.displayName}§3§lは§l${ChatColor.YELLOW}§l${max}§3§l面サイコロを振って${ChatColor.YELLOW}§l${result}§3§lが出た"))
+        waittime = true
+        object: BukkitRunnable(){
+            override fun run(){
+                Bukkit.broadcastMessage(("$prefix §3§l${p.displayName}§3§lは§l${ChatColor.YELLOW}§l${max}§3§l面サイコロを振って${ChatColor.YELLOW}§l${result}§3§lが出た"))
+                waittime = false
+            }
+        }.runTaskLater(plugin,20*3)
         return result
     }
 
@@ -112,15 +135,13 @@ class Man10Dice : JavaPlugin() {
         p.sendMessage("$prefix §fCreated By Mr_El_Capitan")
     }
 
-    var time:Long = 0
-    fun onWait():Boolean{
-        val now = System.currentTimeMillis()
-        return if(now - time < 3000){
-            false
-        }else{
-            time = now
-            true
-        }
+    fun canDice(args: Array<out String>, start: Int):Boolean{
+        if(!checkNumber(args[start])) return false
+        return true
+    }
+
+    fun checkNumber(s: String): Boolean {
+        return NumberUtils.isNumber(s)
     }
 
 }
