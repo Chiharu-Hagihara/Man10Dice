@@ -1,7 +1,8 @@
 package chiharu.hagihara.man10dice
 
-import org.bukkit.Bukkit
 import net.md_5.bungee.api.ChatColor
+import org.apache.commons.lang.math.NumberUtils
+import org.bukkit.Bukkit
 import org.bukkit.command.Command
 import org.bukkit.command.CommandSender
 import org.bukkit.command.ConsoleCommandSender
@@ -13,6 +14,7 @@ import java.util.*
 class Man10Dice : JavaPlugin() {
 
     val prefix = "§l[§d§lM§f§la§a§ln§f§l10§5§lDice§f§l]"
+    var waittime = false
 
     override fun onEnable() {
         // Plugin startup logic
@@ -42,22 +44,32 @@ class Man10Dice : JavaPlugin() {
             return true
         }
 
-        val cmd1 = args[1]
-
         //globaldice
         if (cmd == "global"){
             if (!p.hasPermission("mdice.global"))return false
             if (args.size == 1)return false
-            val put = cmd1.toInt()
+            val put = args[1].toInt()
+            if (waittime){
+                p.sendMessage("$prefix §c§lほかの人がサイコロを振っています！")
+                return false
+            }
+            waittime = true
             GlobalDice(p, 1, put)
+            waittime = false
         }
 
         //localdice
         if (cmd == "local"){
             if (!p.hasPermission("mdice.local"))return false
             if (args.size == 1)return false
-            val put = cmd1.toInt()
+            val put = args[1].toInt()
+            if (waittime){
+                p.sendMessage("$prefix §c§lほかの人がサイコロを振っています！")
+                return false
+            }
+            waittime = true
             LocalDice(p, 1, put)
+            waittime = false
         }
 
         return false
@@ -67,7 +79,7 @@ class Man10Dice : JavaPlugin() {
     fun GlobalDice(p: Player, min: Int, max: Int): Int{
         val result = rollDice(min, max)
         Bukkit.broadcastMessage("$prefix §l${p.displayName}がダイスを振っています・・・§k§lxx")
-        //３秒間のため
+        onWait()
         Bukkit.broadcastMessage(("$prefix §3§l${p.displayName}§3§lは§l${ChatColor.YELLOW}§l${max}§3§l面サイコロを振って${ChatColor.YELLOW}§l${result}§3§lが出た"))
         return result
     }
@@ -76,7 +88,7 @@ class Man10Dice : JavaPlugin() {
     fun LocalDice(p: Player, min: Int, max: Int): Int{
         val result = rollDice(min, max)
         Bukkit.broadcastMessage("$prefix §l${p.displayName}がダイスを振っています・・・§k§lxx")
-        //３秒間のため
+        onWait()
         Bukkit.broadcastMessage(("$prefix §3§l${p.displayName}§3§lは§l${ChatColor.YELLOW}§l${max}§3§l面サイコロを振って${ChatColor.YELLOW}§l${result}§3§lが出た"))
         return result
     }
@@ -96,10 +108,23 @@ class Man10Dice : JavaPlugin() {
         if (p.hasPermission("mdice.global")) {
             p.sendMessage("$prefix §f/mdice global [数字] : ダイスを全体チャットで通知します。")
         }
-        if (p.hasPermission("mdice.op")) {
-            p.sendMessage("$prefix §f/mdice rangeset [数字] : localdiceの通知範囲を設定します。")
-        }
         p.sendMessage("$prefix §e=====================")
         p.sendMessage("$prefix §fCreated By Mr_El_Capitan")
     }
+
+    var time:Long = 0
+    fun onWait():Boolean{
+        val now = System.currentTimeMillis()
+        return if(now - time < 3000){
+            false
+        }else{
+            time = now
+            true
+        }
+    }
+
+    private fun checkNumber(s: String): Boolean {
+        return NumberUtils.isNumber(s)
+    }
+
 }
