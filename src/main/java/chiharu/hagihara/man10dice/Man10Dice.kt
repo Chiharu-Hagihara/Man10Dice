@@ -123,8 +123,4 @@ class Man10Dice : JavaPlugin() {
         }
     }
 
-    private fun checkNumber(s: String): Boolean {
-        return NumberUtils.isNumber(s)
-    }
-
 }
