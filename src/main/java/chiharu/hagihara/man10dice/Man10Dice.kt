@@ -26,18 +26,13 @@ class Man10Dice : JavaPlugin() {
         // Plugin startup logic
         getCommand("mdice")?.setExecutor(this)
         plugin = this
-        radius = try {
-            config.getInt("radius")
-        }catch (e:NullPointerException) {
-            e.printStackTrace()
-            50
-        }
+        saveDefaultConfig()
+        val config = config
+        config.getInt("radius")
     }
 
     override fun onDisable() {
         // Plugin shutdown logic
-        config.set("radius",radius)
-        this.saveConfig()
     }
 
     override fun onCommand(sender: CommandSender, command: Command, label: String, args: Array<out String>): Boolean {
@@ -60,15 +55,7 @@ class Man10Dice : JavaPlugin() {
         }
 
         if (cmd == "reload"){
-            config.set("radius",radius)
-            this.saveConfig()
-
-            radius = try {
-                config.getInt("radius")
-            }catch (e:NullPointerException) {
-                e.printStackTrace()
-                50
-            }
+            reloadConfig()
         }
 
         //globaldice
@@ -118,7 +105,6 @@ class Man10Dice : JavaPlugin() {
     fun LocalDice(p: Player, min: Int, max: Int): Int{
         val result = rollDice(min, max)
         waittime = true
-        p.sendMessage("$prefix §l${p.displayName}がダイスを振っています・・・§k§lxx")
         for (players in p.getNearbyEntities(plugin.radius.toDouble(), plugin.radius.toDouble(), plugin.radius.toDouble())) {
             if (players is Player) {
                 p.sendMessage("$prefix §l${p.displayName}がダイスを振っています・・・§k§lxx")
@@ -126,11 +112,8 @@ class Man10Dice : JavaPlugin() {
         }
         object: BukkitRunnable(){
             override fun run(){
-                p.sendMessage(("$prefix §3§l${p.displayName}§3§lは§l${ChatColor.YELLOW}§l${max}§3§l面サイコロを振って${ChatColor.YELLOW}§l${result}§3§lが出た"))
                 for (players in p.getNearbyEntities(plugin.radius.toDouble(), plugin.radius.toDouble(), plugin.radius.toDouble())) {
-                    if (players is Player) {
-                        p.sendMessage(("$prefix §3§l${p.displayName}§3§lは§l${ChatColor.YELLOW}§l${max}§3§l面サイコロを振って${ChatColor.YELLOW}§l${result}§3§lが出た"))
-                    }
+                    p.sendMessage(("$prefix §3§l${p.displayName}§3§lは§l${ChatColor.YELLOW}§l${max}§3§l面サイコロを振って${ChatColor.YELLOW}§l${result}§3§lが出た"))
                 }
                 waittime = false
             }
