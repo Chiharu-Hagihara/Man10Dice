@@ -39,6 +39,7 @@ class Man10Dice : JavaPlugin() {
         //ヘルプ表示
         if (cmd == "help"){
             showHelp(p)
+            return true
         }
 
         val cmd1 = args[1]
@@ -87,8 +88,7 @@ class Man10Dice : JavaPlugin() {
     }
 
 
-    fun showHelp(p: Player): Boolean {
-        if (p.hasPermission("mdice.local") || p.hasPermission("mdice.global") || p.hasPermission("mdice.op")) return false
+    fun showHelp(p: Player){
         p.sendMessage("$prefix §e=====ヘルプメニュー=====")
         if (p.hasPermission("mdice.local")) {
             p.sendMessage("$prefix §f/mdice local [数字] : ダイスを設定された半径のなかにいるプレイヤーに通知します。")
@@ -101,6 +101,5 @@ class Man10Dice : JavaPlugin() {
         }
         p.sendMessage("$prefix §e=====================")
         p.sendMessage("$prefix §fCreated By Mr_El_Capitan")
-        return true
     }
 }
