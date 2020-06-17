@@ -105,8 +105,13 @@ class Man10Dice : JavaPlugin() {
     //ローカルダイス
     fun LocalDice(p: Player, min: Int, max: Int): Int{
         val result = rollDice(min, max)
-        Bukkit.broadcastMessage("$prefix §l${p.displayName}がダイスを振っています・・・§k§lxx")
         waittime = true
+        p.sendMessage("$prefix §l${p.displayName}がダイスを振っています・・・§k§lxx")
+        for (players in p.getNearbyEntities(plugin.radius.toDouble(), plugin.radius.toDouble(), plugin.radius.toDouble())) {
+            if (players is Player) {
+                p.sendMessage("$prefix §l${p.displayName}がダイスを振っています・・・§k§lxx")
+            }
+        }
         object: BukkitRunnable(){
             override fun run(){
                 p.sendMessage(("$prefix §3§l${p.displayName}§3§lは§l${ChatColor.YELLOW}§l${max}§3§l面サイコロを振って${ChatColor.YELLOW}§l${result}§3§lが出た"))
