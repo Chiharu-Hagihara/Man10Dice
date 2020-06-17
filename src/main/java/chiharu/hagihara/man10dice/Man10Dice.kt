@@ -25,8 +25,6 @@ class Man10Dice : JavaPlugin() {
 
     override fun onCommand(sender: CommandSender, command: Command, label: String, args: Array<out String>): Boolean {
         val p = sender as Player
-        val cmd = args[0]
-        val cmd1 = args[1]
 
         //コンソールからのコマンドをキャンセル
         if (sender is ConsoleCommandSender) {
@@ -36,10 +34,14 @@ class Man10Dice : JavaPlugin() {
 
         if (args.isEmpty())return false
 
+        val cmd = args[0]
+
         //ヘルプ表示
         if (cmd == "help"){
             showHelp(p)
         }
+
+        val cmd1 = args[1]
 
         //globaldice
         if (cmd == "global"){
