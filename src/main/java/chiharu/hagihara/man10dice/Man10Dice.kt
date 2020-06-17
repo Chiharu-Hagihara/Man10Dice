@@ -44,10 +44,24 @@ class Man10Dice : JavaPlugin() {
             GlobalDice(p, 1, put)
         }
 
+        if (cmd == "local"){
+            if (!p.hasPermission("mdice.local"))return false
+            if (args.size == 1)return false
+            val put = cmd1.toInt()
+            LocalDice(p, 1, put)
+        }
+
         return false
     }
 
     fun GlobalDice(p: Player, min: Int, max: Int): Int{
+        val result = rollDice(min, max)
+        Bukkit.broadcastMessage("$prefix §l${p.displayName}がダイスを振っています・・・§k§lxx")
+        Bukkit.broadcastMessage(("$prefix §3§l${p.displayName}§3§lは§l${ChatColor.YELLOW}§l${max}§3§l面サイコロを振って${ChatColor.YELLOW}§l${result}§3§lが出た"))
+        return result
+    }
+
+    fun LocalDice(p: Player, min: Int, max: Int): Int{
         val result = rollDice(min, max)
         Bukkit.broadcastMessage("$prefix §l${p.displayName}がダイスを振っています・・・§k§lxx")
         Bukkit.broadcastMessage(("$prefix §3§l${p.displayName}§3§lは§l${ChatColor.YELLOW}§l${max}§3§l面サイコロを振って${ChatColor.YELLOW}§l${result}§3§lが出た"))
