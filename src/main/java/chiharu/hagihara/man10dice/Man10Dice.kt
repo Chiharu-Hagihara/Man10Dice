@@ -59,6 +59,18 @@ class Man10Dice : JavaPlugin() {
             return true
         }
 
+        if (cmd == "reload"){
+            config.set("radius",radius)
+            this.saveConfig()
+
+            radius = try {
+                config.getInt("radius")
+            }catch (e:NullPointerException) {
+                e.printStackTrace()
+                50
+            }
+        }
+
         //globaldice
         if (cmd == "global"){
             if (!p.hasPermission("mdice.global"))return false
