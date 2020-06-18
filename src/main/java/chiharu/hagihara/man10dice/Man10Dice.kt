@@ -28,7 +28,7 @@ class Man10Dice : JavaPlugin() {
         plugin = this
         saveDefaultConfig()
         val config = config
-        config.getInt("radius")
+        radius = config.getInt("radius")
     }
 
     override fun onDisable() {
@@ -105,15 +105,19 @@ class Man10Dice : JavaPlugin() {
     fun LocalDice(p: Player, min: Int, max: Int): Int{
         val result = rollDice(min, max)
         waittime = true
+        p.sendMessage("$prefix §l${p.displayName}がダイスを振っています・・・§k§lxx")
         for (players in p.getNearbyEntities(plugin.radius.toDouble(), plugin.radius.toDouble(), plugin.radius.toDouble())) {
             if (players is Player) {
-                p.sendMessage("$prefix §l${p.displayName}がダイスを振っています・・・§k§lxx")
+                players.sendMessage("$prefix §l${p.displayName}がダイスを振っています・・・§k§lxx")
             }
         }
         object: BukkitRunnable(){
             override fun run(){
+                p.sendMessage(("$prefix §3§l${p.displayName}§3§lは§l${ChatColor.YELLOW}§l${max}§3§l面サイコロを振って${ChatColor.YELLOW}§l${result}§3§lが出た"))
                 for (players in p.getNearbyEntities(plugin.radius.toDouble(), plugin.radius.toDouble(), plugin.radius.toDouble())) {
-                    p.sendMessage(("$prefix §3§l${p.displayName}§3§lは§l${ChatColor.YELLOW}§l${max}§3§l面サイコロを振って${ChatColor.YELLOW}§l${result}§3§lが出た"))
+                    if (players is Player) {
+                        players.sendMessage(("$prefix §3§l${p.displayName}§3§lは§l${ChatColor.YELLOW}§l${max}§3§l面サイコロを振って${ChatColor.YELLOW}§l${result}§3§lが出た"))
+                    }
                 }
                 waittime = false
             }
