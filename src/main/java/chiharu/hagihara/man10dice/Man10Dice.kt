@@ -65,7 +65,7 @@ class Man10Dice : JavaPlugin() {
             if (args.size == 1)return false
             if (!canDice(args, 1))return false
             val put = args[1].toInt()
-            if (args[1] < 0.toString())return false
+            if (put < 0)return false
             if (waittime){
                 p.sendMessage("$prefix §c§lほかの人がサイコロを振っています！")
                 return false
@@ -79,7 +79,7 @@ class Man10Dice : JavaPlugin() {
             if (args.size == 1)return false
             if (!canDice(args, 1))return false
             val put = args[1].toInt()
-            if (args[1] < 0.toString())return false
+            if (put < 0)return false
             if (waittime){
                 p.sendMessage("$prefix §c§lほかの人がサイコロを振っています！")
                 return false
