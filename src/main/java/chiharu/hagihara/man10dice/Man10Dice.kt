@@ -97,7 +97,7 @@ class Man10Dice : JavaPlugin() {
         waittime = true
         object: BukkitRunnable(){
             override fun run(){
-                Bukkit.broadcastMessage(("$prefix §3§l${p.displayName}§3§lは§l${ChatColor.YELLOW}§l${max}§3§l面サイコロを振って${ChatColor.YELLOW}§l${result}§3§lが出た"))
+                Bukkit.broadcastMessage(("$prefix §3§l${p.displayName}§3§lは§e§l${max}§3§l面サイコロを振って§e§l${result}§3§lが出た"))
                 waittime = false
             }
         }.runTaskLater(plugin,20*3)
@@ -116,10 +116,10 @@ class Man10Dice : JavaPlugin() {
         }
         object: BukkitRunnable(){
             override fun run(){
-                p.sendMessage(("$prefix §3§l${p.displayName}§3§lは§l${ChatColor.YELLOW}§l${max}§3§l面サイコロを振って${ChatColor.YELLOW}§l${result}§3§lが出た"))
+                p.sendMessage(("$prefix §3§l${p.displayName}§3§lは§e§l${max}§3§l面サイコロを振って${ChatColor.YELLOW}§l${result}§3§lが出た"))
                 for (players in p.getNearbyEntities(plugin.radius.toDouble(), plugin.radius.toDouble(), plugin.radius.toDouble())) {
                     if (players is Player) {
-                        players.sendMessage(("$prefix §3§l${p.displayName}§3§lは§l${ChatColor.YELLOW}§l${max}§3§l面サイコロを振って${ChatColor.YELLOW}§l${result}§3§lが出た"))
+                        players.sendMessage(("$prefix §3§l${p.displayName}§3§lは§e§l${max}§3§l面サイコロを振って§e§l${result}§3§lが出た"))
                     }
                 }
                 waittime = false
