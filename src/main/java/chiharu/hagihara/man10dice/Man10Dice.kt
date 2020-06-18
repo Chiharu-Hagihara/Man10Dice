@@ -55,8 +55,10 @@ class Man10Dice : JavaPlugin() {
         }
 
         if (cmd == "reload"){
-            if (!p.hasPermission("mdice.op"))return false
+            if (!p.hasPermission("mdice.reload"))return false
             reloadConfig()
+            val config = config
+            radius = config.getInt("radius")
         }
 
         //globaldice
