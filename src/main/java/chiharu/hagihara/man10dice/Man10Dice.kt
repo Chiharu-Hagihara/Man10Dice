@@ -55,6 +55,7 @@ class Man10Dice : JavaPlugin() {
         }
 
         if (cmd == "reload"){
+            if (!p.hasPermission("mdice.op"))return false
             reloadConfig()
         }
 
