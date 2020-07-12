@@ -2,6 +2,8 @@ name: Man10Dice
 version: 1.15
 main: chiharu.hagihara.man10dice.Man10Dice
 api-version: 1.15
+softdepend:
+  - Man10CommonLibs
 authors:
   - Mr_El_Capitan
   - testusuke

@@ -1,0 +1,6 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="Man10Dice">
+    <output-path>$PROJECT_DIR$/../../paper/plugins</output-path>
+    <root id="archive" name="Man10Dice.jar" />
+  </artifact>
+</component>
