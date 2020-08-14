@@ -1,12 +1,13 @@
 package chiharu.hagihara.man10dice
 
+import chiharu.hagihara.man10dice.Man10Dice.Companion.DMap
 import chiharu.hagihara.man10dice.Man10Dice.Companion.helder
 import chiharu.hagihara.man10dice.Man10Dice.Companion.nowAD
 import chiharu.hagihara.man10dice.Man10Dice.Companion.plugin
 import chiharu.hagihara.man10dice.Man10Dice.Companion.prefix
 import chiharu.hagihara.man10dice.Man10Dice.Companion.radius
+import chiharu.hagihara.man10dice.Man10Dice.Companion.thereisWinner
 import chiharu.hagihara.man10dice.Man10Dice.Companion.waittime
-import chiharu.hagihara.man10dice.Man10Dice.Companion.xdNumbers
 import net.md_5.bungee.api.ChatColor
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
@@ -14,23 +15,23 @@ import org.bukkit.scheduler.BukkitRunnable
 import java.util.*
 
 class Util {
-    companion object{
+    companion object {
         //グローバルダイス
-        fun GlobalDice(p: Player, min: Int, max: Int): Int{
+        fun GlobalDice(p: Player, min: Int, max: Int): Int {
             val result = rollDice(min, max)
             Bukkit.broadcastMessage("$prefix §l${p.displayName}がダイスを振っています・・・§k§lxx")
             waittime = true
-            object: BukkitRunnable(){
-                override fun run(){
+            object : BukkitRunnable() {
+                override fun run() {
                     Bukkit.broadcastMessage(("$prefix §3§l${p.displayName}§3§lは§e§l${max}§3§l面サイコロを振って§e§l${result}§3§lが出た"))
                     waittime = false
                 }
-            }.runTaskLater(plugin,20*3)
+            }.runTaskLater(plugin, 20 * 3)
             return result
         }
 
         //ローカルダイス
-        fun LocalDice(p: Player, min: Int, max: Int): Int{
+        fun LocalDice(p: Player, min: Int, max: Int): Int {
             val result = rollDice(min, max)
             waittime = true
             p.sendMessage("$prefix §l${p.displayName}がダイスを振っています・・・§k§lxx")
@@ -39,8 +40,8 @@ class Util {
                     players.sendMessage("$prefix §l${p.displayName}がダイスを振っています・・・§k§lxx")
                 }
             }
-            object: BukkitRunnable(){
-                override fun run(){
+            object : BukkitRunnable() {
+                override fun run() {
                     p.sendMessage(("$prefix §3§l${p.displayName}§3§lは§e§l${max}§3§l面サイコロを振って${ChatColor.YELLOW}§l${result}§3§lが出た"))
                     for (players in p.getNearbyEntities(radius.toDouble(), radius.toDouble(), radius.toDouble())) {
                         if (players is Player) {
@@ -49,7 +50,7 @@ class Util {
                     }
                     waittime = false
                 }
-            }.runTaskLater(plugin,20*3)
+            }.runTaskLater(plugin, 20 * 3)
             return result
         }
 
@@ -60,26 +61,38 @@ class Util {
                 override fun run() {
                     Bukkit.broadcastMessage(("$prefix §3§l${p.displayName}§3§lは§e§l${max}§3§l面サイコロを振って§e§l${result}§3§lが出た"))
 
-                    var winner = false
-
-                    if (xdNumbers?.get(result - 1) != null) {
-                        Bukkit.broadcastMessage(prefix + "§e§l§n" + xdNumbers!![result - 1].name + "§5§l§nはピッタリで当てました！！ｷﾀ――(ﾟ∀ﾟ)――!!")
-                        winner = true
+                    if (DMap.containsKey(result)) {
+                        val winner = DMap[result]
+                        if (winner != null) {
+                            val winnerName : String = DMap[result]?.let { Bukkit.getPlayer(it)?.displayName }!!
+                            Bukkit.broadcastMessage("${prefix}§e§l§n${winnerName}§5§l§nはピッタリで当てました！！ｷﾀ――(ﾟ∀ﾟ)――!!")
+                        }
+                        thereisWinner = true
+                    }
+                    if (DMap.containsKey(result + 1)) {
+                        val winner = DMap[result + 1]
+                        if (winner != null) {
+                            val winnerName : String? = DMap[result + 1]?.let { Bukkit.getPlayer(it)?.displayName }
+                            Bukkit.broadcastMessage("${prefix}§e§l§n${winnerName}§2§lは1多い誤差で当てました！！")
+                        }
+                        thereisWinner = true
+                    }
+                    if (DMap.containsKey(result - 1)) {
+                        val winner = DMap[result - 1]
+                        if (winner != null) {
+                            val winnerName : String = DMap[result - 1]?.let { Bukkit.getPlayer(it)?.displayName }!!
+                            Bukkit.broadcastMessage("${prefix}§e§l§n${winnerName}§2§lは1少ない誤差で当てました！！")
+                        }
+                        thereisWinner = true
+                    }
+                    if (!thereisWinner) {
+                        Bukkit.broadcastMessage("$prefix§7§l当選者はいませんでした。")
                     }
 
-                    if (xdNumbers?.size != result && xdNumbers?.get(result) != null) {
-                        Bukkit.broadcastMessage(prefix + "§e§l" + xdNumbers!![result].name + "§2§lは1多い誤差で当てました！！")
-                        winner = true
-                    }
-
-                    if (result >= 2 && xdNumbers?.get(result - 2) != null) {
-                        Bukkit.broadcastMessage(prefix + "§e§l" + xdNumbers!![result - 2].name + "§2§lは1少ない誤差で当てました！！")
-                        winner = true
-                    }
-
-                    if (!winner) Bukkit.broadcastMessage("$prefix§7§l当選者はいませんでした。")
+                    if (thereisWinner) thereisWinner = false
                     helder = null
                     nowAD = false
+                    DMap.clear()
                 }
             }.runTaskLater(plugin, 20 * 3)
             return result
@@ -92,18 +105,19 @@ class Util {
         }
 
 
-        fun showHelp(p: Player){
+        fun showHelp(p: Player) {
             p.sendMessage("$prefix §e=====ヘルプメニュー=====")
             p.sendMessage("$prefix §f/mdice local [数字] : ダイスを設定された半径のなかにいるプレイヤーに通知します。")
             p.sendMessage("$prefix §f/mdice global [数字] : ダイスを全体チャットで通知します。")
             p.sendMessage("$prefix §f/mdice admindice [数字] : みんな大好きAdminDiceです。")
+            p.sendMessage("$prefix §f/mdice admindice cancel : AdminDiceをキャンセルできます。")
             p.sendMessage("$prefix §e=====================")
-            p.sendMessage("$prefix §fCreated By Mr_El_Capitan")
+            p.sendMessage("$prefix §fCreated By MEC11")
         }
 
-        fun canDice(args: Array<out String>, start: Int):Boolean{
+        fun canDice(args: Array<out String>, start: Int): Boolean {
             isNumber(args[start])
-            if (args[start] < 0.toString())return false
+            if (args[start] < 0.toString()) return false
             return true
         }
 
@@ -116,7 +130,7 @@ class Util {
             return true
         }
 
-        fun reloadConfig(){
+        fun reloadConfig() {
             reloadConfig()
         }
 

@@ -2,8 +2,8 @@ package chiharu.hagihara.man10dice
 
 import org.bukkit.command.CommandSender
 import org.bukkit.configuration.file.YamlConfiguration
-import org.bukkit.entity.Player
 import org.bukkit.plugin.java.JavaPlugin
+import java.util.*
 
 
 class Man10Dice : JavaPlugin() {
@@ -18,10 +18,11 @@ class Man10Dice : JavaPlugin() {
         var waittime = false
 
         var nowAD = false
-        var xdNumbers: MutableList<Player>? = mutableListOf()
+        val DMap: MutableMap<Int, UUID> = mutableMapOf()
         var helder : CommandSender? = null
         var heldername : String? = null
         var Dmax = 0
+        var thereisWinner = false
 
         var radius:Int = 50
     }

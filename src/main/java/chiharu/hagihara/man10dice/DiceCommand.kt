@@ -1,5 +1,6 @@
 package chiharu.hagihara.man10dice
 
+import chiharu.hagihara.man10dice.Man10Dice.Companion.DMap
 import chiharu.hagihara.man10dice.Man10Dice.Companion.Dmax
 import chiharu.hagihara.man10dice.Man10Dice.Companion.config
 import chiharu.hagihara.man10dice.Man10Dice.Companion.helder
@@ -9,7 +10,6 @@ import chiharu.hagihara.man10dice.Man10Dice.Companion.plugin
 import chiharu.hagihara.man10dice.Man10Dice.Companion.prefix
 import chiharu.hagihara.man10dice.Man10Dice.Companion.radius
 import chiharu.hagihara.man10dice.Man10Dice.Companion.waittime
-import chiharu.hagihara.man10dice.Man10Dice.Companion.xdNumbers
 import chiharu.hagihara.man10dice.Util.Companion.AdminDice
 import chiharu.hagihara.man10dice.Util.Companion.GlobalDice
 import chiharu.hagihara.man10dice.Util.Companion.LocalDice
@@ -80,9 +80,16 @@ object DiceCommand : CommandExecutor {
         //AdminD
         if (cmd == "admindice") {
             if (!sender.hasPermission("mdice.op")) return false
+            if (args[1] == "cancel"){
+                helder = null
+                nowAD = false
+                DMap.clear()
+                Bukkit.broadcastMessage("$prefix§c§lAdminDiceがキャンセルされました。")
+                return true
+            }
             if (!canDice(args, 1)) return false
             if (nowAD) {
-                sender.sendMessage("$prefix§c現在D中です！")
+                sender.sendMessage("$prefix§c現在AdminDice中です！")
                 return false
             }
             nowAD = true
