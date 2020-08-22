@@ -5,7 +5,6 @@ import chiharu.hagihara.man10dice.Man10Dice.Companion.Dmax
 import chiharu.hagihara.man10dice.Man10Dice.Companion.helder
 import chiharu.hagihara.man10dice.Man10Dice.Companion.nowAD
 import chiharu.hagihara.man10dice.Man10Dice.Companion.prefix
-import chiharu.hagihara.man10dice.Util.Companion.isNumber
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.player.AsyncPlayerChatEvent
@@ -16,12 +15,14 @@ class Listener(pl: Man10Dice) : Listener {
         pl.server.pluginManager.registerEvents(this, pl)
     }
 
+    val util = Util()
+
     @EventHandler
     fun adminDiceChat(e: AsyncPlayerChatEvent): Boolean {
 
         if (!nowAD) return false
 
-        if (!isNumber(e.message)) return false
+        if (!util.isNumber(e.message)) return false
 
         if (e.player == helder) {
             e.player.sendMessage("$prefix§c開催者は回答できません！")

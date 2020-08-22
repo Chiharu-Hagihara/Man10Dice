@@ -10,12 +10,6 @@ import chiharu.hagihara.man10dice.Man10Dice.Companion.plugin
 import chiharu.hagihara.man10dice.Man10Dice.Companion.prefix
 import chiharu.hagihara.man10dice.Man10Dice.Companion.radius
 import chiharu.hagihara.man10dice.Man10Dice.Companion.waittime
-import chiharu.hagihara.man10dice.Util.Companion.AdminDice
-import chiharu.hagihara.man10dice.Util.Companion.GlobalDice
-import chiharu.hagihara.man10dice.Util.Companion.LocalDice
-import chiharu.hagihara.man10dice.Util.Companion.canDice
-import chiharu.hagihara.man10dice.Util.Companion.reloadConfig
-import chiharu.hagihara.man10dice.Util.Companion.showHelp
 import org.bukkit.Bukkit
 import org.bukkit.command.Command
 import org.bukkit.command.CommandExecutor
@@ -25,6 +19,7 @@ import org.bukkit.entity.Player
 import org.bukkit.scheduler.BukkitRunnable
 
 object DiceCommand : CommandExecutor {
+    val util = Util()
     override fun onCommand(sender: CommandSender, command: Command, label: String, args: Array<out String>): Boolean {
         //コンソールからのコマンドをキャンセル
         if (sender is ConsoleCommandSender) {
@@ -40,13 +35,13 @@ object DiceCommand : CommandExecutor {
 
         //ヘルプ表示
         if (cmd == "help") {
-            showHelp(sender)
+            util.showHelp(sender)
             return true
         }
 
         if (cmd == "reload") {
             if (!sender.hasPermission("mdice.reload")) return false
-            reloadConfig()
+            util.reloadConfig()
             val config = config
             radius = config.getInt("radius")
         }
@@ -56,25 +51,25 @@ object DiceCommand : CommandExecutor {
         //globaldice
         if (cmd == "global") {
             if (!sender.hasPermission("mdice.global")) return false
-            if (!canDice(args, 1)) return false
+            if (!util.canDice(args, 1)) return false
             val put = args[1].toInt()
             if (waittime) {
                 sender.sendMessage("$prefix §c§lほかの人がサイコロを振っています！")
                 return false
             }
-            GlobalDice(sender, 1, put)
+            util.GlobalDice(sender, 1, put)
         }
 
         //localdice
         if (cmd == "local") {
             if (!sender.hasPermission("mdice.local")) return false
-            if (!canDice(args, 1)) return false
+            if (!util.canDice(args, 1)) return false
             val put = args[1].toInt()
             if (waittime) {
                 sender.sendMessage("$prefix §c§lほかの人がサイコロを振っています！")
                 return false
             }
-            LocalDice(sender, 1, put)
+            util.LocalDice(sender, 1, put)
         }
 
         //AdminD
@@ -87,7 +82,7 @@ object DiceCommand : CommandExecutor {
                 Bukkit.broadcastMessage("$prefix§c§lAdminDiceがキャンセルされました。")
                 return true
             }
-            if (!canDice(args, 1)) return false
+            if (!util.canDice(args, 1)) return false
             if (nowAD) {
                 sender.sendMessage("$prefix§c現在AdminDice中です！")
                 return false
@@ -100,7 +95,7 @@ object DiceCommand : CommandExecutor {
             Bukkit.broadcastMessage("${prefix}${heldername}§d§lさんが§e§l${Dmax}D§d§lをスタートしました！§a§l(半角数字のみだけ入力してください！)")
             object : BukkitRunnable() {
                 override fun run() {
-                    AdminDice(sender, 1, Dmax)
+                    util.AdminDice(sender, 1, Dmax)
                 }
             }.runTaskLater(plugin, 20*60)
         }
