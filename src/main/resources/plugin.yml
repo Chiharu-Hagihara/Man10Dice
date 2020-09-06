@@ -1,5 +1,5 @@
 name: Man10Dice
-version: 1.15
+version: 1.0
 main: chiharu.hagihara.man10dice.Man10Dice
 api-version: 1.15
 softdepend:
