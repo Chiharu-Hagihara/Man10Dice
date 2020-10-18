@@ -6,7 +6,6 @@ import chiharu.hagihara.man10dice.Man10Dice.Companion.config
 import chiharu.hagihara.man10dice.Man10Dice.Companion.helder
 import chiharu.hagihara.man10dice.Man10Dice.Companion.heldername
 import chiharu.hagihara.man10dice.Man10Dice.Companion.nowAD
-import chiharu.hagihara.man10dice.Man10Dice.Companion.plugin
 import chiharu.hagihara.man10dice.Man10Dice.Companion.prefix
 import chiharu.hagihara.man10dice.Man10Dice.Companion.radius
 import chiharu.hagihara.man10dice.Man10Dice.Companion.waittime
@@ -16,7 +15,6 @@ import org.bukkit.command.CommandExecutor
 import org.bukkit.command.CommandSender
 import org.bukkit.command.ConsoleCommandSender
 import org.bukkit.entity.Player
-import org.bukkit.scheduler.BukkitRunnable
 
 object DiceCommand : CommandExecutor {
     val util = Util()
@@ -27,7 +25,7 @@ object DiceCommand : CommandExecutor {
             return false
         }
 
-        if (sender !is Player)return false
+        if (sender !is Player) return false
 
         if (args.isEmpty()) return false
 
@@ -75,7 +73,7 @@ object DiceCommand : CommandExecutor {
         //AdminD
         if (cmd == "admindice") {
             if (!sender.hasPermission("mdice.op")) return false
-            if (args[1] == "cancel"){
+            if (args[1] == "cancel") {
                 helder = null
                 nowAD = false
                 DMap.clear()
@@ -87,18 +85,16 @@ object DiceCommand : CommandExecutor {
                 sender.sendMessage("$prefix§c現在AdminDice中です！")
                 return false
             }
-            nowAD = true
-            Dmax = args[1].toInt()
-            helder = sender
-            heldername = sender.displayName
-            helder?.sendMessage("${prefix}§a${Dmax}Dを開始しました！")
-            Bukkit.broadcastMessage("${prefix}${heldername}§d§lさんが§e§l${Dmax}D§d§lをスタートしました！§a§l(半角数字のみだけ入力してください！)")
-            object : BukkitRunnable() {
-                override fun run() {
-                    util.AdminDice(sender, 1, Dmax)
-                }
-            }.runTaskLater(plugin, 20*60)
+            Thread {
+                nowAD = true
+                Dmax = args[1].toInt()
+                helder = sender
+                heldername = sender.displayName
+                helder?.sendMessage("${prefix}§a${Dmax}Dを開始しました！")
+                Bukkit.broadcastMessage("${prefix}${heldername}§d§lさんが§e§l${Dmax}D§d§lをスタートしました！§a§l(半角数字のみだけ入力してください！)")
+                util.AdminDice(sender, 1, Dmax)
+            }.start()
         }
-        return false
+        return true
     }
 }

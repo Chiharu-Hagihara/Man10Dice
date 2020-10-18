@@ -4,6 +4,7 @@ import org.bukkit.command.CommandSender
 import org.bukkit.configuration.file.YamlConfiguration
 import org.bukkit.plugin.java.JavaPlugin
 import java.util.*
+import java.util.concurrent.ConcurrentHashMap
 
 
 class Man10Dice : JavaPlugin() {
@@ -18,7 +19,7 @@ class Man10Dice : JavaPlugin() {
         var waittime = false
 
         var nowAD = false
-        val DMap: MutableMap<Int, UUID> = mutableMapOf()
+        val DMap: ConcurrentHashMap<Int, UUID> = ConcurrentHashMap()
         var helder : CommandSender? = null
         var heldername : String? = null
         var Dmax = 0

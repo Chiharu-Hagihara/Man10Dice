@@ -111,14 +111,14 @@ class Util {
         p.sendMessage("$prefix §f/mdice admindice [数字] : みんな大好きAdminDiceです。")
         p.sendMessage("$prefix §f/mdice admindice cancel : AdminDiceをキャンセルできます。")
         p.sendMessage("$prefix §e=====================")
-        p.sendMessage("$prefix §fVersion: 2.1")
+        p.sendMessage("$prefix §fVersion: 2.2")
         p.sendMessage("$prefix §fCreated By MEC11")
     }
 
     fun canDice(args: Array<out String>, start: Int): Boolean {
         isNumber(args[start])
-        if (args[start] < 0.toString()) return false
-        if (args[start] > 2147483647.toString()) return false
+        if (args[start].toInt() < 0) return false
+        if (args[start].toInt() > 2147483647) return false
         return true
     }
 
