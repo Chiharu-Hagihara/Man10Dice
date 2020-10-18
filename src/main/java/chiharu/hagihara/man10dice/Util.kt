@@ -36,7 +36,7 @@ object Util {
         p.sendMessage("$prefix §f/mdice admindice [数字] : みんな大好きAdminDiceです。")
         p.sendMessage("$prefix §f/mdice admindice cancel : AdminDiceをキャンセルできます。")
         p.sendMessage("$prefix §e=====================")
-        p.sendMessage("$prefix §fVersion: 2.2")
+        p.sendMessage("$prefix §fVersion: 3.0")
         p.sendMessage("$prefix §fCreated By MEC11")
     }
 
