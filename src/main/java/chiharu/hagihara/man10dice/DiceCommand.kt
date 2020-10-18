@@ -1,11 +1,10 @@
 package chiharu.hagihara.man10dice
 
-import chiharu.hagihara.man10dice.Util.DMap
 import chiharu.hagihara.man10dice.Util.Dmax
 import chiharu.hagihara.man10dice.Util.canDice
 import chiharu.hagihara.man10dice.Util.config
-import chiharu.hagihara.man10dice.Util.helder
-import chiharu.hagihara.man10dice.Util.heldername
+import chiharu.hagihara.man10dice.Util.host
+import chiharu.hagihara.man10dice.Util.hostname
 import chiharu.hagihara.man10dice.Util.nowAD
 import chiharu.hagihara.man10dice.Util.prefix
 import chiharu.hagihara.man10dice.Util.radius
@@ -13,6 +12,7 @@ import chiharu.hagihara.man10dice.Util.reloadConfig
 import chiharu.hagihara.man10dice.Util.showHelp
 import chiharu.hagihara.man10dice.Util.waittime
 import chiharu.hagihara.man10dice.dice.AdminDice.admindice
+import chiharu.hagihara.man10dice.dice.AdminDice.cancelAD
 import chiharu.hagihara.man10dice.dice.GlobalDice.globaldice
 import chiharu.hagihara.man10dice.dice.LocalDice.localdice
 import org.bukkit.Bukkit
@@ -79,10 +79,7 @@ object DiceCommand : CommandExecutor {
         if (cmd == "admindice") {
             if (!sender.hasPermission("mdice.op")) return false
             if (args[1] == "cancel") {
-                helder = null
-                nowAD = false
-                DMap.clear()
-                Bukkit.broadcastMessage("$prefix§c§lAdminDiceがキャンセルされました。")
+                cancelAD()
                 return true
             }
             if (!canDice(args, 1)) return false
@@ -92,10 +89,10 @@ object DiceCommand : CommandExecutor {
             }
             nowAD = true
             Dmax = args[1].toInt()
-            helder = sender
-            heldername = sender.displayName
-            helder?.sendMessage("${prefix}§a${Dmax}Dを開始しました！")
-            Bukkit.broadcastMessage("${prefix}${heldername}§d§lさんが§e§l${Dmax}D§d§lをスタートしました！§a§l(半角数字のみだけ入力してください！)")
+            host = sender
+            hostname = sender.displayName
+            host?.sendMessage("${prefix}§a${Dmax}Dを開始しました！")
+            Bukkit.broadcastMessage("${prefix}${hostname}§d§lさんが§e§l${Dmax}D§d§lをスタートしました！§a§l(半角数字のみだけ入力してください！)")
             admindice(sender, 1, Dmax)
         }
         return true

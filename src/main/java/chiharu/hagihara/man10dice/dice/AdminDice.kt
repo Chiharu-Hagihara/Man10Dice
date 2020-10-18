@@ -3,7 +3,7 @@ package chiharu.hagihara.man10dice.dice
 import chiharu.hagihara.man10dice.Man10Dice.Companion.plugin
 import chiharu.hagihara.man10dice.Util
 import chiharu.hagihara.man10dice.Util.DMap
-import chiharu.hagihara.man10dice.Util.helder
+import chiharu.hagihara.man10dice.Util.host
 import chiharu.hagihara.man10dice.Util.nowAD
 import chiharu.hagihara.man10dice.Util.prefix
 import chiharu.hagihara.man10dice.Util.thereisWinner
@@ -49,10 +49,17 @@ object AdminDice {
             }
 
             if (thereisWinner) thereisWinner = false
-            helder = null
+            host = null
             nowAD = false
             DMap.clear()
         })
         return result
+    }
+
+    fun cancelAD(){
+        host = null
+        nowAD = false
+        DMap.clear()
+        Bukkit.broadcastMessage("$prefix§c§lAdminDiceがキャンセルされました。")
     }
 }

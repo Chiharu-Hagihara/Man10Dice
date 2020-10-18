@@ -16,8 +16,8 @@ object Util {
 
     var nowAD = false
     val DMap: ConcurrentHashMap<Int, UUID> = ConcurrentHashMap()
-    var helder : CommandSender? = null
-    var heldername : String? = null
+    var host : CommandSender? = null
+    var hostname : String? = null
     var Dmax = 0
     var thereisWinner = false
 
