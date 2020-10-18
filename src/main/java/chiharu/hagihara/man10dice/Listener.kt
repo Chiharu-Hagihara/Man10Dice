@@ -2,18 +2,30 @@ package chiharu.hagihara.man10dice
 
 import chiharu.hagihara.man10dice.Util.DMap
 import chiharu.hagihara.man10dice.Util.Dmax
-import chiharu.hagihara.man10dice.Util.helder
+import chiharu.hagihara.man10dice.Util.host
 import chiharu.hagihara.man10dice.Util.isNumber
 import chiharu.hagihara.man10dice.Util.nowAD
 import chiharu.hagihara.man10dice.Util.prefix
+import chiharu.hagihara.man10dice.dice.AdminDice.cancelAD
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.player.AsyncPlayerChatEvent
+import org.bukkit.event.player.PlayerQuitEvent
 
 class Listener(pl: Man10Dice) : Listener {
 
     init {
         pl.server.pluginManager.registerEvents(this, pl)
+    }
+
+    @EventHandler
+    fun onLogout(e: PlayerQuitEvent){
+        if (!nowAD) return
+
+        // ホストログアウト
+        if (e.player == host){
+            cancelAD()
+        }
     }
 
     @EventHandler
@@ -23,7 +35,7 @@ class Listener(pl: Man10Dice) : Listener {
 
         if (!isNumber(e.message)) return false
 
-        if (e.player == helder) {
+        if (e.player == host) {
             e.player.sendMessage("$prefix§c開催者は回答できません！")
             e.isCancelled = true
             return false
@@ -46,7 +58,7 @@ class Listener(pl: Man10Dice) : Listener {
         } else {
             DMap[answer] = e.player.uniqueId
             e.player.sendMessage("$prefix§e§l$answer§a§lと回答しました！")
-            helder!!.sendMessage("$prefix§e§l${e.player.name}§a§lが§e§l${answer}§a§lと回答しました。")
+            host!!.sendMessage("$prefix§e§l${e.player.name}§a§lが§e§l${answer}§a§lと回答しました。")
             e.isCancelled = true
             return true
         }
