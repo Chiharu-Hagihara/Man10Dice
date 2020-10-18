@@ -14,9 +14,12 @@ object AdminDice {
     fun admindice(p: Player, min: Int, max: Int): Int {
         val result = Util.rollDice(min, max)
         Bukkit.getScheduler().runTaskAsynchronously(plugin, Runnable {
+            Thread.sleep(60 *1000)
             Bukkit.broadcastMessage("${prefix} §l${p.displayName}がダイスを振っています・・・§k§lxx")
+            Thread.sleep(5 *1000)
             Bukkit.broadcastMessage(("${prefix} §3§l${p.displayName}§3§lは§e§l${max}§3§l面サイコロを振って§e§l${result}§3§lが出た"))
 
+            Thread.sleep(1 *1000)
             if (DMap.containsKey(result)) {
                 val winner = DMap[result]
                 if (winner != null) {
