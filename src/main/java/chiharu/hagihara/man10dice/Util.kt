@@ -34,10 +34,11 @@ object Util {
         p.sendMessage("$prefix §f/mdice local [数字] : ダイスを設定された半径のなかにいるプレイヤーに通知します。")
         p.sendMessage("$prefix §f/mdice global [数字] : ダイスを全体チャットで通知します。")
         p.sendMessage("$prefix §f/mdice admindice [数字] : みんな大好きAdminDiceです。")
+        p.sendMessage("$prefix §f/mdice answer [数字] : AdminDiceの回答をします。")
         p.sendMessage("$prefix §f/mdice admindice cancel : AdminDiceをキャンセルできます。")
         p.sendMessage("$prefix §f/mdice reload : Configをリロードします。")
         p.sendMessage("$prefix §e=====================")
-        p.sendMessage("$prefix §fVersion: 3.2.1")
+        p.sendMessage("$prefix §fVersion: 3.2.2")
         p.sendMessage("$prefix §fCreated By MEC11")
     }
 
