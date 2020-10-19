@@ -109,7 +109,8 @@ object DiceCommand : CommandExecutor {
             host?.sendMessage("${prefix}§a${Dmax}Dを開始しました！")
             for (player in Bukkit.getOnlinePlayers()) {
                 player.sendMessage("${prefix}${hostname}§d§lさんが§e§l${Dmax}D§d§lをスタートしました！")
-                sendSuggestCommand(player, "§a§l(/mdice answer <数字> で回答することができます。)", "§a§lここをクリックで自動補完", "/mdice answer ")
+                player.sendMessage("$prefix§a§l/mdice answer <数字> で回答することができます。")
+                sendSuggestCommand(player, "§e§l[ここをクリックで自動補完します]", "§a§lClick!", "/mdice answer ")
             }
             admindice(sender, 1, Dmax)
         }
