@@ -35,8 +35,9 @@ object Util {
         p.sendMessage("$prefix §f/mdice global [数字] : ダイスを全体チャットで通知します。")
         p.sendMessage("$prefix §f/mdice admindice [数字] : みんな大好きAdminDiceです。")
         p.sendMessage("$prefix §f/mdice admindice cancel : AdminDiceをキャンセルできます。")
+        p.sendMessage("$prefix §f/mdice reload : Configをリロードします。")
         p.sendMessage("$prefix §e=====================")
-        p.sendMessage("$prefix §fVersion: 3.0")
+        p.sendMessage("$prefix §fVersion: 3.1")
         p.sendMessage("$prefix §fCreated By MEC11")
     }
 

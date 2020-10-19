@@ -43,7 +43,10 @@ object DiceCommand : CommandExecutor {
         }
 
         if (cmd == "reload") {
-            if (!sender.hasPermission("mdice.reload")) return false
+            if (!sender.hasPermission("mdice.op")) {
+                sender.sendMessage("§cYou do not have permission to use this command.")
+                return false
+            }
             reloadConfig()
             val config = config
             radius = config.getInt("radius")
@@ -53,7 +56,10 @@ object DiceCommand : CommandExecutor {
 
         //globaldice
         if (cmd == "global") {
-            if (!sender.hasPermission("mdice.global")) return false
+            if (!sender.hasPermission("mdice.global")) {
+                sender.sendMessage("§cYou do not have permission to use this command.")
+                return false
+            }
             if (!canDice(args, 1)) return false
             val put = args[1].toInt()
             if (waittime) {
@@ -65,7 +71,10 @@ object DiceCommand : CommandExecutor {
 
         //localdice
         if (cmd == "local") {
-            if (!sender.hasPermission("mdice.local")) return false
+            if (!sender.hasPermission("mdice.local")) {
+                sender.sendMessage("§cYou do not have permission to use this command.")
+                return false
+            }
             if (!canDice(args, 1)) return false
             val put = args[1].toInt()
             if (waittime) {
@@ -75,9 +84,12 @@ object DiceCommand : CommandExecutor {
             localdice(sender, 1, put)
         }
 
-        //AdminD
+        //AdminDice
         if (cmd == "admindice") {
-            if (!sender.hasPermission("mdice.op")) return false
+            if (!sender.hasPermission("mdice.op")) {
+                sender.sendMessage("§cYou do not have permission to use this command.")
+                return false
+            }
             if (args[1] == "cancel") {
                 cancelAD()
                 return true
@@ -94,6 +106,14 @@ object DiceCommand : CommandExecutor {
             host?.sendMessage("${prefix}§a${Dmax}Dを開始しました！")
             Bukkit.broadcastMessage("${prefix}${hostname}§d§lさんが§e§l${Dmax}D§d§lをスタートしました！§a§l(半角数字のみだけ入力してください！)")
             admindice(sender, 1, Dmax)
+        }
+
+        //AdminDice回答
+        if (cmd == "answer"){
+            if (!nowAD){
+                sender.sendMessage("§c現在はAdminDiceが開催されていません。")
+                return false
+            }
         }
         return true
     }
