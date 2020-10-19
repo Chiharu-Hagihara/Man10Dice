@@ -11,6 +11,7 @@ import chiharu.hagihara.man10dice.Util.nowAD
 import chiharu.hagihara.man10dice.Util.prefix
 import chiharu.hagihara.man10dice.Util.radius
 import chiharu.hagihara.man10dice.Util.reloadConfig
+import chiharu.hagihara.man10dice.Util.sendSuggestCommand
 import chiharu.hagihara.man10dice.Util.showHelp
 import chiharu.hagihara.man10dice.Util.waittime
 import chiharu.hagihara.man10dice.dice.AdminDice.admindice
@@ -106,7 +107,10 @@ object DiceCommand : CommandExecutor {
             host = sender
             hostname = sender.displayName
             host?.sendMessage("${prefix}§a${Dmax}Dを開始しました！")
-            Bukkit.broadcastMessage("${prefix}${hostname}§d§lさんが§e§l${Dmax}D§d§lをスタートしました！§a§l(/mdice answer <数字> で回答することができます。)")
+            for (player in Bukkit.getOnlinePlayers()) {
+                player.sendMessage("${prefix}${hostname}§d§lさんが§e§l${Dmax}D§d§lをスタートしました！")
+                sendSuggestCommand(player, "§a§l(/mdice answer <数字> で回答することができます。)", "§a§lここをクリックで自動補完", "/mdice answer ")
+            }
             admindice(sender, 1, Dmax)
         }
 

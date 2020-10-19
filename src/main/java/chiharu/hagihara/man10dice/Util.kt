@@ -1,5 +1,8 @@
 package chiharu.hagihara.man10dice
 
+import net.md_5.bungee.api.chat.ClickEvent
+import net.md_5.bungee.api.chat.ComponentBuilder
+import net.md_5.bungee.api.chat.HoverEvent
 import org.bukkit.command.CommandSender
 import org.bukkit.configuration.file.YamlConfiguration
 import org.bukkit.entity.Player
@@ -16,12 +19,12 @@ object Util {
 
     var nowAD = false
     val DMap: ConcurrentHashMap<Int, UUID> = ConcurrentHashMap()
-    var host : CommandSender? = null
-    var hostname : String? = null
+    var host: CommandSender? = null
+    var hostname: String? = null
     var Dmax = 0
     var thereisWinner = false
 
-    var radius:Int = 50
+    var radius: Int = 50
 
     fun rollDice(min: Int, max: Int): Int {
         val r = Random()
@@ -60,5 +63,25 @@ object Util {
 
     fun reloadConfig() {
         reloadConfig()
+    }
+
+    fun sendSuggestCommand(p: Player, text: String?, hoverText: String?, command: String?) {
+
+        //////////////////////////////////////////
+        //      ホバーテキストとイベントを作成する
+        var hoverEvent: HoverEvent? = null
+        if (hoverText != null) {
+            val hover = ComponentBuilder(hoverText).create()
+            hoverEvent = HoverEvent(HoverEvent.Action.SHOW_TEXT, hover)
+        }
+
+        //////////////////////////////////////////
+        //   クリックイベントを作成する
+        var clickEvent: ClickEvent? = null
+        if (command != null) {
+            clickEvent = ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, command)
+        }
+        val message = ComponentBuilder(text).event(hoverEvent).event(clickEvent).create()
+        p.spigot().sendMessage(*message)
     }
 }
