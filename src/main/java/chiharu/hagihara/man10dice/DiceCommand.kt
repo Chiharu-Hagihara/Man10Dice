@@ -1,10 +1,12 @@
 package chiharu.hagihara.man10dice
 
+import chiharu.hagihara.man10dice.Util.DMap
 import chiharu.hagihara.man10dice.Util.Dmax
 import chiharu.hagihara.man10dice.Util.canDice
 import chiharu.hagihara.man10dice.Util.config
 import chiharu.hagihara.man10dice.Util.host
 import chiharu.hagihara.man10dice.Util.hostname
+import chiharu.hagihara.man10dice.Util.isNumber
 import chiharu.hagihara.man10dice.Util.nowAD
 import chiharu.hagihara.man10dice.Util.prefix
 import chiharu.hagihara.man10dice.Util.radius
@@ -44,7 +46,7 @@ object DiceCommand : CommandExecutor {
 
         if (cmd == "reload") {
             if (!sender.hasPermission("mdice.op")) {
-                sender.sendMessage("§cYou do not have permission to use this command.")
+                sender.sendMessage("$prefix§cYou do not have permission to use this command.")
                 return false
             }
             reloadConfig()
@@ -57,13 +59,13 @@ object DiceCommand : CommandExecutor {
         //globaldice
         if (cmd == "global") {
             if (!sender.hasPermission("mdice.global")) {
-                sender.sendMessage("§cYou do not have permission to use this command.")
+                sender.sendMessage("$prefix§cYou do not have permission to use this command.")
                 return false
             }
             if (!canDice(args, 1)) return false
             val put = args[1].toInt()
             if (waittime) {
-                sender.sendMessage("$prefix §c§lほかの人がサイコロを振っています！")
+                sender.sendMessage("$prefix§c§lほかの人がサイコロを振っています！")
                 return false
             }
             globaldice(sender, 1, put)
@@ -72,13 +74,13 @@ object DiceCommand : CommandExecutor {
         //localdice
         if (cmd == "local") {
             if (!sender.hasPermission("mdice.local")) {
-                sender.sendMessage("§cYou do not have permission to use this command.")
+                sender.sendMessage("$prefix§cYou do not have permission to use this command.")
                 return false
             }
             if (!canDice(args, 1)) return false
             val put = args[1].toInt()
             if (waittime) {
-                sender.sendMessage("$prefix §c§lほかの人がサイコロを振っています！")
+                sender.sendMessage("$prefix§c§lほかの人がサイコロを振っています！")
                 return false
             }
             localdice(sender, 1, put)
@@ -87,7 +89,7 @@ object DiceCommand : CommandExecutor {
         //AdminDice
         if (cmd == "admindice") {
             if (!sender.hasPermission("mdice.op")) {
-                sender.sendMessage("§cYou do not have permission to use this command.")
+                sender.sendMessage("$prefix§cYou do not have permission to use this command.")
                 return false
             }
             if (args[1] == "cancel") {
@@ -104,16 +106,48 @@ object DiceCommand : CommandExecutor {
             host = sender
             hostname = sender.displayName
             host?.sendMessage("${prefix}§a${Dmax}Dを開始しました！")
-            Bukkit.broadcastMessage("${prefix}${hostname}§d§lさんが§e§l${Dmax}D§d§lをスタートしました！§a§l(半角数字のみだけ入力してください！)")
+            Bukkit.broadcastMessage("${prefix}${hostname}§d§lさんが§e§l${Dmax}D§d§lをスタートしました！§a§l(/mdice answer <数字> で回答することができます。)")
             admindice(sender, 1, Dmax)
         }
 
         //AdminDice回答
         if (cmd == "answer"){
             if (!nowAD){
-                sender.sendMessage("§c現在はAdminDiceが開催されていません。")
+                sender.sendMessage("$prefix§c現在はAdminDiceが開催されていません。")
                 return false
             }
+
+            if (sender == host){
+                sender.sendMessage("$prefix§c開催者は回答できません。")
+                return false
+            }
+
+            if (!isNumber(args[0])){
+                sender.sendMessage("$prefix§c数字で回答してください。")
+                return false
+            }
+
+            val answer = args[0].toInt()
+
+            if (answer <= 0 || answer > Dmax){
+                sender.sendMessage("${prefix}§c1~${Dmax}で指定してください！")
+                return false
+            }
+
+            if (DMap.containsKey(answer)){
+                sender.sendMessage("$prefix§c§lすでにその数字は言われています！")
+                return false
+            }
+
+            if (DMap.containsValue(sender.uniqueId)){
+                sender.sendMessage("$prefix§a§lあなたはもう数字を言いました。")
+                return false
+            }
+
+            DMap[answer] = sender.uniqueId
+            sender.sendMessage("$prefix§e§l$answer§a§lと回答しました！")
+            host!!.sendMessage("$prefix§e§l${sender.name}§a§lが§e§l${answer}§a§lと回答しました。")
+            return true
         }
         return true
     }
