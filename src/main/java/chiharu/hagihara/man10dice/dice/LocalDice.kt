@@ -13,18 +13,18 @@ object LocalDice {
     fun localdice(p: Player, min: Int, max: Int): Int {
         val result = Util.rollDice(min, max)
         waittime = true
-        p.sendMessage("${prefix} §l${p.displayName}がダイスを振っています・・・§k§lxx")
+        p.sendMessage("${prefix}§l${p.displayName}がダイスを振っています・・・§k§lxx")
         for (players in p.getNearbyEntities(radius.toDouble(), radius.toDouble(), radius.toDouble())) {
             if (players is Player) {
-                players.sendMessage("${prefix} §l${p.displayName}がダイスを振っています・・・§k§lxx")
+                players.sendMessage("${prefix}§l${p.displayName}がダイスを振っています・・・§k§lxx")
             }
         }
         object : BukkitRunnable() {
             override fun run() {
-                p.sendMessage(("${prefix} §3§l${p.displayName}§3§lは§e§l${max}§3§l面サイコロを振って${ChatColor.YELLOW}§l${result}§3§lが出た"))
+                p.sendMessage(("${prefix}§3§l${p.displayName}§3§lは§e§l${max}§3§l面サイコロを振って${ChatColor.YELLOW}§l${result}§3§lが出た"))
                 for (players in p.getNearbyEntities(radius.toDouble(), radius.toDouble(), radius.toDouble())) {
                     if (players is Player) {
-                        players.sendMessage(("${prefix} §3§l${p.displayName}§3§lは§e§l${max}§3§l面サイコロを振って§e§l${result}§3§lが出た"))
+                        players.sendMessage(("${prefix}§3§l${p.displayName}§3§lは§e§l${max}§3§l面サイコロを振って§e§l${result}§3§lが出た"))
                     }
                 }
                 waittime = false
