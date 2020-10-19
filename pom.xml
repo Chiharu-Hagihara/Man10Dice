@@ -76,7 +76,7 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <languageVersion>1.1</languageVersion>
+                    <languageVersion>1.3</languageVersion>
                 </configuration>
             </plugin>
             <plugin>
