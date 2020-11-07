@@ -127,12 +127,12 @@ object DiceCommand : CommandExecutor {
                 return false
             }
 
-            if (!isNumber(args[0])){
+            if (!isNumber(args[1])){
                 sender.sendMessage("$prefix§c数字で回答してください。")
                 return false
             }
 
-            val answer = args[0].toInt()
+            val answer = args[1].toInt()
 
             if (answer <= 0 || answer > Dmax){
                 sender.sendMessage("${prefix}§c1~${Dmax}で指定してください！")
