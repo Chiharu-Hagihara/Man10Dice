@@ -41,7 +41,7 @@ object Util {
         p.sendMessage("$prefix §f/mdice admindice cancel : AdminDiceをキャンセルできます。")
         p.sendMessage("$prefix §f/mdice reload : Configをリロードします。")
         p.sendMessage("$prefix §e=====================")
-        p.sendMessage("$prefix §fVersion: 3.2.2")
+        p.sendMessage("$prefix §fVersion: 3.2.3")
         p.sendMessage("$prefix §fCreated By MEC11")
     }
 
