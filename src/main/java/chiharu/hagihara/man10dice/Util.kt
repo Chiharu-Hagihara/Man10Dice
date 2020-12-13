@@ -8,9 +8,9 @@ import net.md_5.bungee.api.chat.hover.content.Text
 import org.bukkit.command.CommandSender
 import org.bukkit.configuration.file.YamlConfiguration
 import org.bukkit.entity.Player
-import org.bukkit.metadata.FixedMetadataValue
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
+
 
 object Util {
 
@@ -19,6 +19,8 @@ object Util {
     val config = YamlConfiguration()
 
     var nowGD = false
+
+    var nowLD = HashMap<UUID, Boolean>()
 
     var nowAD = false
     val DMap: ConcurrentHashMap<Int, UUID> = ConcurrentHashMap()
@@ -44,12 +46,12 @@ object Util {
         p.sendMessage("$prefix §f/mdice admindice cancel : AdminDiceをキャンセルできます。")
         p.sendMessage("$prefix §f/mdice reload : Configをリロードします。")
         p.sendMessage("$prefix §e=====================")
-        p.sendMessage("$prefix §fVersion: 3.2.3")
+        p.sendMessage("$prefix §fLast update on 2020/12/13")
         p.sendMessage("$prefix §fCreated By MEC11")
     }
 
     fun canDice(args: Array<out String>, start: Int): Boolean {
-        isNumber(args[start])
+        if (!(isNumber(args[start])))return false
         if (args[start].toInt() < 0) return false
         if (args[start].toInt() > 2147483647) return false
         return true
@@ -65,7 +67,7 @@ object Util {
     }
 
     fun reloadConfig() {
-        reloadConfig()
+        plugin.reloadConfig()
     }
 
     fun sendSuggestCommand(p: Player, text: String?, hoverText: String?, command: String?) {
@@ -86,21 +88,5 @@ object Util {
         }
         val message = ComponentBuilder(text).event(hoverEvent).event(clickEvent).create()
         p.spigot().sendMessage(*message)
-    }
-
-    fun flagset(player: Player) {
-        player.setMetadata("nowLD", FixedMetadataValue(plugin, true))
-    }
-
-    fun flagunset(player: Player) {
-        player.setMetadata("nowLD", FixedMetadataValue(plugin, false))
-    }
-
-    fun flagget(player: Player): Boolean {
-        return try {
-            player.getMetadata("nowLD")[0].value() as Boolean
-        } catch (e: Exception) {
-            false
-        }
     }
 }

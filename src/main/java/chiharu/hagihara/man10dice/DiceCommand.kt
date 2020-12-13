@@ -4,12 +4,12 @@ import chiharu.hagihara.man10dice.Util.DMap
 import chiharu.hagihara.man10dice.Util.Dmax
 import chiharu.hagihara.man10dice.Util.canDice
 import chiharu.hagihara.man10dice.Util.config
-import chiharu.hagihara.man10dice.Util.flagget
 import chiharu.hagihara.man10dice.Util.host
 import chiharu.hagihara.man10dice.Util.hostname
 import chiharu.hagihara.man10dice.Util.isNumber
 import chiharu.hagihara.man10dice.Util.nowAD
 import chiharu.hagihara.man10dice.Util.nowGD
+import chiharu.hagihara.man10dice.Util.nowLD
 import chiharu.hagihara.man10dice.Util.prefix
 import chiharu.hagihara.man10dice.Util.radius
 import chiharu.hagihara.man10dice.Util.reloadConfig
@@ -26,6 +26,7 @@ import org.bukkit.command.CommandSender
 import org.bukkit.command.ConsoleCommandSender
 import org.bukkit.entity.Player
 
+
 object DiceCommand : CommandExecutor {
     override fun onCommand(sender: CommandSender, command: Command, label: String, args: Array<out String>): Boolean {
         //コンソールからのコマンドをキャンセル
@@ -36,7 +37,10 @@ object DiceCommand : CommandExecutor {
 
         if (sender !is Player) return false
 
-        if (args.isEmpty()) return false
+        if (args.isEmpty()) {
+            showHelp(sender)
+            return true
+        }
 
         val cmd = args[0]
 
@@ -58,7 +62,9 @@ object DiceCommand : CommandExecutor {
 
         if (args.size == 1) return false
 
-        //globaldice
+        //////////////////////////
+        // GlobalDice
+        ////////////////
         if (cmd == "global") {
             if (!sender.hasPermission("mdice.global")) {
                 sender.sendMessage("$prefix§cYou do not have permission to use this command.")
@@ -73,7 +79,9 @@ object DiceCommand : CommandExecutor {
             globaldice(sender, 1, put)
         }
 
-        //localdice
+        /////////////////////////
+        // LocalDice
+        /////////////
         if (cmd == "local") {
             if (!sender.hasPermission("mdice.local")) {
                 sender.sendMessage("$prefix§cYou do not have permission to use this command.")
@@ -81,18 +89,26 @@ object DiceCommand : CommandExecutor {
             }
             if (!canDice(args, 1)) return false
             val put = args[1].toInt()
+            if (nowLD.containsKey(sender.uniqueId)){
+                sender.sendMessage("$prefix§c§l同時に2個以上サイコロを振れません！")
+                return false
+            }
             for (players in sender.getNearbyEntities(radius.toDouble(), radius.toDouble(), radius.toDouble())) {
-                if (players !is Player) {
-                    if (flagget(players as Player)) {
+                if (players is Player) {
+                    if (nowLD.containsKey(players.uniqueId)){
                         sender.sendMessage("$prefix§c§lほかの人がサイコロを振っています！")
                         return false
                     }
                 }
             }
+            nowLD[sender.uniqueId] = true
             localdice(sender, 1, put)
+            nowLD.remove(sender.uniqueId)
         }
 
-        //AdminDice
+        //////////////////////
+        // AdminDice
+        /////////////
         if (cmd == "admindice") {
             if (!sender.hasPermission("mdice.op")) {
                 sender.sendMessage("$prefix§cYou do not have permission to use this command.")
@@ -120,7 +136,9 @@ object DiceCommand : CommandExecutor {
             admindice(sender, 1, Dmax)
         }
 
-        //AdminDice回答
+        ///////////////////////
+        // AdminDice回答
+        ///////////////
         if (cmd == "answer"){
             if (!nowAD){
                 sender.sendMessage("$prefix§c現在はAdminDiceが開催されていません。")
