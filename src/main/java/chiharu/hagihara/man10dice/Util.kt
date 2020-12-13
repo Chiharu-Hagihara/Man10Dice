@@ -1,11 +1,14 @@
 package chiharu.hagihara.man10dice
 
+import chiharu.hagihara.man10dice.Man10Dice.Companion.plugin
 import net.md_5.bungee.api.chat.ClickEvent
 import net.md_5.bungee.api.chat.ComponentBuilder
 import net.md_5.bungee.api.chat.HoverEvent
+import net.md_5.bungee.api.chat.hover.content.Text
 import org.bukkit.command.CommandSender
 import org.bukkit.configuration.file.YamlConfiguration
 import org.bukkit.entity.Player
+import org.bukkit.metadata.FixedMetadataValue
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 
@@ -15,7 +18,7 @@ object Util {
 
     val config = YamlConfiguration()
 
-    var waittime = false
+    var nowGD = false
 
     var nowAD = false
     val DMap: ConcurrentHashMap<Int, UUID> = ConcurrentHashMap()
@@ -24,7 +27,7 @@ object Util {
     var Dmax = 0
     var thereisWinner = false
 
-    var radius: Int = 50
+    var radius: Int = 10
 
     fun rollDice(min: Int, max: Int): Int {
         val r = Random()
@@ -71,7 +74,7 @@ object Util {
         //      ホバーテキストとイベントを作成する
         var hoverEvent: HoverEvent? = null
         if (hoverText != null) {
-            val hover = ComponentBuilder(hoverText).create()
+            val hover = Text(hoverText)
             hoverEvent = HoverEvent(HoverEvent.Action.SHOW_TEXT, hover)
         }
 
@@ -83,5 +86,21 @@ object Util {
         }
         val message = ComponentBuilder(text).event(hoverEvent).event(clickEvent).create()
         p.spigot().sendMessage(*message)
+    }
+
+    fun flagset(player: Player) {
+        player.setMetadata("nowLD", FixedMetadataValue(plugin, true))
+    }
+
+    fun flagunset(player: Player) {
+        player.setMetadata("nowLD", FixedMetadataValue(plugin, false))
+    }
+
+    fun flagget(player: Player): Boolean {
+        return try {
+            player.getMetadata("nowLD")[0].value() as Boolean
+        } catch (e: Exception) {
+            false
+        }
     }
 }
