@@ -51,7 +51,7 @@ object Util {
     }
 
     fun canDice(args: Array<out String>, start: Int): Boolean {
-        if (!(isNumber(args[start])))return false
+        if (!(isNumber(args[start]))) return false
         if (args[start].toInt() < 0) return false
         if (args[start].toInt() > 2147483647) return false
         return true

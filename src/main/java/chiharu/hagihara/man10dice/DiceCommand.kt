@@ -58,6 +58,7 @@ object DiceCommand : CommandExecutor {
             reloadConfig()
             val config = config
             radius = config.getInt("radius")
+            sender.sendMessage("$prefix§a§lConfig Reloaded.")
         }
 
         if (args.size == 1) return false
@@ -101,9 +102,7 @@ object DiceCommand : CommandExecutor {
                     }
                 }
             }
-            nowLD[sender.uniqueId] = true
             localdice(sender, 1, put)
-            nowLD.remove(sender.uniqueId)
         }
 
         //////////////////////
