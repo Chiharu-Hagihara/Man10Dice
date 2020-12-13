@@ -4,16 +4,17 @@ import chiharu.hagihara.man10dice.Util.DMap
 import chiharu.hagihara.man10dice.Util.Dmax
 import chiharu.hagihara.man10dice.Util.canDice
 import chiharu.hagihara.man10dice.Util.config
+import chiharu.hagihara.man10dice.Util.flagget
 import chiharu.hagihara.man10dice.Util.host
 import chiharu.hagihara.man10dice.Util.hostname
 import chiharu.hagihara.man10dice.Util.isNumber
 import chiharu.hagihara.man10dice.Util.nowAD
+import chiharu.hagihara.man10dice.Util.nowGD
 import chiharu.hagihara.man10dice.Util.prefix
 import chiharu.hagihara.man10dice.Util.radius
 import chiharu.hagihara.man10dice.Util.reloadConfig
 import chiharu.hagihara.man10dice.Util.sendSuggestCommand
 import chiharu.hagihara.man10dice.Util.showHelp
-import chiharu.hagihara.man10dice.Util.waittime
 import chiharu.hagihara.man10dice.dice.AdminDice.admindice
 import chiharu.hagihara.man10dice.dice.AdminDice.cancelAD
 import chiharu.hagihara.man10dice.dice.GlobalDice.globaldice
@@ -65,7 +66,7 @@ object DiceCommand : CommandExecutor {
             }
             if (!canDice(args, 1)) return false
             val put = args[1].toInt()
-            if (waittime) {
+            if (nowGD) {
                 sender.sendMessage("$prefix§c§lほかの人がサイコロを振っています！")
                 return false
             }
@@ -80,9 +81,13 @@ object DiceCommand : CommandExecutor {
             }
             if (!canDice(args, 1)) return false
             val put = args[1].toInt()
-            if (waittime) {
-                sender.sendMessage("$prefix§c§lほかの人がサイコロを振っています！")
-                return false
+            for (players in sender.getNearbyEntities(radius.toDouble(), radius.toDouble(), radius.toDouble())) {
+                if (players !is Player) {
+                    if (flagget(players as Player)) {
+                        sender.sendMessage("$prefix§c§lほかの人がサイコロを振っています！")
+                        return false
+                    }
+                }
             }
             localdice(sender, 1, put)
         }
