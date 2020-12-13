@@ -71,7 +71,10 @@ object DiceCommand : CommandExecutor {
                 sender.sendMessage("$prefix§cYou do not have permission to use this command.")
                 return false
             }
-            if (!canDice(args, 1)) return false
+            if (!canDice(args, 1)){
+                sender.sendMessage("$prefix§c§l正しい数字を入力してください。")
+                return false
+            }
             val put = args[1].toInt()
             if (nowGD) {
                 sender.sendMessage("$prefix§c§lほかの人がサイコロを振っています！")
@@ -88,7 +91,10 @@ object DiceCommand : CommandExecutor {
                 sender.sendMessage("$prefix§cYou do not have permission to use this command.")
                 return false
             }
-            if (!canDice(args, 1)) return false
+            if (!canDice(args, 1)){
+                sender.sendMessage("$prefix§c§l正しい数字を入力してください。")
+                return false
+            }
             val put = args[1].toInt()
             if (nowLD.containsKey(sender.uniqueId)){
                 sender.sendMessage("$prefix§c§l同時に2個以上サイコロを振れません！")
@@ -117,7 +123,10 @@ object DiceCommand : CommandExecutor {
                 cancelAD()
                 return true
             }
-            if (!canDice(args, 1)) return false
+            if (!canDice(args, 1)){
+                sender.sendMessage("$prefix§c§l正しい数字を入力してください。")
+                return false
+            }
             if (nowAD) {
                 sender.sendMessage("$prefix§c現在AdminDice中です！")
                 return false
