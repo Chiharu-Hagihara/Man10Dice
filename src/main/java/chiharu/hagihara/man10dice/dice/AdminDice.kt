@@ -1,18 +1,18 @@
 package chiharu.hagihara.man10dice.dice
 
 import chiharu.hagihara.man10dice.Man10Dice.Companion.plugin
-import chiharu.hagihara.man10dice.Util
 import chiharu.hagihara.man10dice.Util.DMap
 import chiharu.hagihara.man10dice.Util.host
 import chiharu.hagihara.man10dice.Util.nowAD
 import chiharu.hagihara.man10dice.Util.prefix
+import chiharu.hagihara.man10dice.Util.rollDice
 import chiharu.hagihara.man10dice.Util.thereisWinner
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 
 object AdminDice {
     fun admindice(p: Player, min: Int, max: Int): Int {
-        val result = Util.rollDice(min, max)
+        val result = rollDice(min, max)
         Bukkit.getScheduler().runTaskAsynchronously(plugin, Runnable {
             Thread.sleep(60 *1000)
             Bukkit.broadcastMessage("${prefix}§l${p.displayName}がダイスを振っています・・・§k§lxx")
