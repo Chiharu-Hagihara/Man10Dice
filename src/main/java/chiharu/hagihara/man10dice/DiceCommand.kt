@@ -114,7 +114,7 @@ object DiceCommand : CommandExecutor {
         //////////////////////
         // AdminDice
         /////////////
-        if (cmd == "admindice") {
+        if (cmd == "admin") {
             if (!sender.hasPermission("mdice.op")) {
                 sender.sendMessage("$prefix§cYou do not have permission to use this command.")
                 return false
