@@ -25,14 +25,8 @@ repositories {
 dependencies {
     compileOnly 'com.destroystokyo.paper:paper-api:1.16.3-R0.1-SNAPSHOT'
     compile "org.jetbrains.kotlin:kotlin-stdlib:1.4.30"
-    api('com.github.sya-ri:EasySpigotAPI:1.5.0') {
+    api('com.github.sya-ri:EasySpigotAPI:2.2.0') {
         exclude group: 'org.spigotmc', module: 'spigot-api'
-    }
-}
-
-processResources {
-    from(sourceSets.main.resources.srcDirs) {
-        filter ReplaceTokens, tokens: [version: version]
     }
 }
 
@@ -40,6 +34,7 @@ sourceSets {
     main.java.srcDirs += 'src/main/kotlin'
     main.java.srcDirs += 'src/main/java'
 }
+
 processResources {
     from(sourceSets.main.resources.srcDirs) {
         filter ReplaceTokens, tokens: [version: version]

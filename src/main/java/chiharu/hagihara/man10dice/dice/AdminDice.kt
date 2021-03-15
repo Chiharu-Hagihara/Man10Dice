@@ -1,12 +1,12 @@
 package chiharu.hagihara.man10dice.dice
 
 import chiharu.hagihara.man10dice.Man10Dice.Companion.plugin
-import chiharu.hagihara.man10dice.Man10Dice.Companion.prefix
 import chiharu.hagihara.man10dice.Util
 import chiharu.hagihara.man10dice.Util.canDice
+import chiharu.hagihara.man10dice.Util.prefix
 import chiharu.hagihara.man10dice.Util.rollDice
 import com.github.syari.spigot.api.scheduler.runTask
-import com.github.syari.spigot.api.util.string.toColor
+import com.github.syari.spigot.api.string.toColor
 import org.bukkit.Bukkit
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
