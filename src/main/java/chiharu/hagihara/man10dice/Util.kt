@@ -1,59 +1,58 @@
 package chiharu.hagihara.man10dice
 
 import chiharu.hagihara.man10dice.Man10Dice.Companion.plugin
+import chiharu.hagihara.man10dice.Man10Dice.Companion.prefix
+import com.github.syari.spigot.api.util.string.toColor
 import net.md_5.bungee.api.chat.ClickEvent
 import net.md_5.bungee.api.chat.ComponentBuilder
 import net.md_5.bungee.api.chat.HoverEvent
 import net.md_5.bungee.api.chat.hover.content.Text
-import org.bukkit.command.CommandSender
 import org.bukkit.configuration.file.YamlConfiguration
 import org.bukkit.entity.Player
 import java.util.*
-import java.util.concurrent.ConcurrentHashMap
 
 
 object Util {
 
-    val prefix = "§l[§d§lM§f§la§a§ln§f§l10§5§lDice§f§l]"
-
     val config = YamlConfiguration()
 
-    var nowGD = false
 
-    var nowLD = HashMap<UUID, Boolean>()
-
-    var nowAD = false
-    val DMap: ConcurrentHashMap<Int, UUID> = ConcurrentHashMap()
-    var host: CommandSender? = null
-    var hostname: String? = null
-    var Dmax = 0
-    var thereisWinner = false
-
-    var radius: Int = 10
-
-    fun rollDice(min: Int, max: Int): Int {
+    fun rollDice(number: Int): Int {
         val r = Random()
-        return r.nextInt(max - min + 1) + min
+        return r.nextInt(number - 1 + 1) + 1
     }
 
 
-    fun showHelp(p: Player) {
-        p.sendMessage("$prefix §e=====ヘルプメニュー=====")
-        p.sendMessage("$prefix §f/mdice local [数字] : ダイスを設定された半径のなかにいるプレイヤーに通知します。")
-        p.sendMessage("$prefix §f/mdice global [数字] : ダイスを全体チャットで通知します。")
-        p.sendMessage("$prefix §f/mdice admin [数字] : みんな大好きAdminDiceです。")
-        p.sendMessage("$prefix §f/mdice answer [数字] : AdminDiceの回答をします。")
-        p.sendMessage("$prefix §f/mdice admin cancel : AdminDiceをキャンセルできます。")
-        p.sendMessage("$prefix §f/mdice reload : Configをリロードします。")
-        p.sendMessage("$prefix §e=====================")
-        p.sendMessage("$prefix §fLast update on 2020/12/13")
-        p.sendMessage("$prefix §fCreated By MEC11")
+    fun showHelp(player: Player) {
+        player.sendMessage("""
+${prefix}&e==============ヘルプ==============
+${prefix}/mdice local [数字] : 結果を設定された半径のなかにいるプレイヤーに通知します。
+${prefix}/mdice global [数字] : 結果を全体チャットで通知します。
+${prefix}/mdice admin [数字] : Adminの振るダイスの結果を言い当てるゲームです。
+${prefix}/mdice answer [数字] : AdminDiceの回答をします。
+${prefix}/mdice admin cancel : AdminDiceをキャンセルできます。
+${prefix}/mdice reload : Configをリロードします。
+${prefix}&e=================================
+${prefix}Latest update on 2021/3/14
+${prefix}Created by Chiharu-Hagihara
+        """.trimIndent().toColor())
     }
 
-    fun canDice(args: Array<out String>, start: Int): Boolean {
-        if (!(isNumber(args[start]))) return false
-        if (args[start].toInt() < 0) return false
-        if (args[start].toInt() > 2147483647) return false
+    fun canDice(player: Player, number: String): Boolean {
+        if (!(isNumber(number))) {
+            player.sendMessage("${prefix}&c数字を入力してください。".toColor())
+            return false
+        }
+
+        if (number.toInt() < 0) {
+            player.sendMessage("${prefix}&c0より大きい数字を入力してください。".toColor())
+            return false
+        }
+
+        if (number.toInt() > 2147483647) {
+            player.sendMessage("${prefix}&c2147483647より小さい数字を入力してください。".toColor())
+            return false
+        }
         return true
     }
 
@@ -68,6 +67,15 @@ object Util {
 
     fun reloadConfig() {
         plugin.reloadConfig()
+    }
+
+    fun hasPerm(player: Player, perm: String): Boolean {
+        if (player.hasPermission(perm)) {
+            return true
+        }
+
+        player.sendMessage("${prefix}&cあなたは権限を持っていません。".toColor())
+        return false
     }
 
     fun sendSuggestCommand(p: Player, text: String?, hoverText: String?, command: String?) {
