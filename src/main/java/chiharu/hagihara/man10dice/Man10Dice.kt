@@ -1,6 +1,7 @@
 package chiharu.hagihara.man10dice
 
-import chiharu.hagihara.man10dice.Util.radius
+import chiharu.hagihara.man10dice.Command.registerCommand
+import com.github.syari.spigot.api.util.string.toColor
 import org.bukkit.plugin.java.JavaPlugin
 
 
@@ -8,11 +9,15 @@ class Man10Dice : JavaPlugin() {
 
     companion object{
         lateinit var plugin:Man10Dice
+
+        val prefix = "&l[&d&lM&f&la&a&ln&f&l10&5&lDice&f&l]&f".toColor()
+
+        var radius: Int = 10
     }
 
     override fun onEnable() {
         // Plugin startup logic
-        getCommand("mdice")?.setExecutor(DiceCommand)
+        registerCommand()
         Listener(this)
         plugin = this
         saveDefaultConfig()

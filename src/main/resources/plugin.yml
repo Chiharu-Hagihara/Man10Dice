@@ -4,5 +4,3 @@ main: chiharu.hagihara.man10dice.Man10Dice
 api-version: 1.15
 softdepend:
   - Man10CommonLibs
-commands:
-  mdice:
