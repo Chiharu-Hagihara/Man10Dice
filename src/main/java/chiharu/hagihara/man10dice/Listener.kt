@@ -3,23 +3,22 @@ package chiharu.hagihara.man10dice
 import chiharu.hagihara.man10dice.dice.AdminDice.cancelAD
 import chiharu.hagihara.man10dice.dice.AdminDice.host
 import chiharu.hagihara.man10dice.dice.AdminDice.nowAD
-import org.bukkit.event.EventHandler
-import org.bukkit.event.Listener
+import com.github.syari.spigot.api.event.EventRegister
+import com.github.syari.spigot.api.event.Events
 import org.bukkit.event.player.PlayerQuitEvent
 
-class Listener(pl: Man10Dice) : Listener {
+object Listener : EventRegister {
 
-    init {
-        pl.server.pluginManager.registerEvents(this, pl)
-    }
+    override fun Events.register() {
 
-    @EventHandler
-    fun onLogout(e: PlayerQuitEvent){
-        if (!nowAD) return
+        event<PlayerQuitEvent> {
+            if (!nowAD) return@event
 
-        // ホストログアウト
-        if (e.player == host){
-            cancelAD()
+            // ホストログアウト
+            if (it.player == host){
+                cancelAD()
+            }
         }
+
     }
 }

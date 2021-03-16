@@ -1,6 +1,7 @@
 package chiharu.hagihara.man10dice
 
 import chiharu.hagihara.man10dice.Command.registerCommand
+import com.github.syari.spigot.api.event.EventRegister.Companion.registerEvents
 import org.bukkit.plugin.java.JavaPlugin
 
 
@@ -15,7 +16,7 @@ class Man10Dice : JavaPlugin() {
     override fun onEnable() {
         plugin = this
         registerCommand()
-        Listener(this)
+        registerEvents(Listener)
         saveDefaultConfig()
         val config = config
         radius = config.getInt("radius")
