@@ -1,5 +1,7 @@
 package chiharu.hagihara.man10dice.dice
 
+import chiharu.hagihara.man10dice.DiceFlag.isThereHasGlobalDiceFlagPlayer
+import chiharu.hagihara.man10dice.DiceFlag.setGlobalFlag
 import chiharu.hagihara.man10dice.Man10Dice.Companion.plugin
 import chiharu.hagihara.man10dice.Util.canDice
 import chiharu.hagihara.man10dice.Util.prefix
@@ -11,8 +13,6 @@ import org.bukkit.scheduler.BukkitRunnable
 
 object GlobalDice {
 
-    var nowGD = false
-
     fun globalDice(p: Player, number: String) {
 
         if (!canDice(p, number)) return
@@ -21,12 +21,19 @@ object GlobalDice {
 
         Bukkit.broadcastMessage("${prefix}&l${p.displayName}がダイスを振っています・・・&k&lxx".toColor())
 
-        nowGD = true
+        Bukkit.getServer().onlinePlayers.forEach {
+            if (isThereHasGlobalDiceFlagPlayer(it)) {
+                p.sendMessage("${prefix}&c現在ほかのプレイヤーがダイスを振っています。")
+                return
+            }
+        }
+
+        setGlobalFlag(p, true)
 
         object : BukkitRunnable() {
             override fun run() {
                 Bukkit.broadcastMessage(("${prefix}&3&l${p.displayName}&3&lは&e&l${number}&3&l面サイコロを振って&e&l${result}&3&lが出た".toColor()))
-                nowGD = false
+                setGlobalFlag(p, false)
             }
         }.runTaskLater(plugin, 20 * 3)
 
