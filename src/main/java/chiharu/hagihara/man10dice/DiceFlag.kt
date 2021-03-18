@@ -15,11 +15,19 @@ object DiceFlag {
     }
 
     fun isThereHasLocalDiceFlagPlayer(p: Player): Boolean {
-        return p.getMetadata("localDice")[0].value() as Boolean
+        return try {
+            p.getMetadata("localDice")[0].value() as Boolean
+        }catch(e: Exception) {
+            false
+        }
     }
 
     fun isThereHasGlobalDiceFlagPlayer(p: Player): Boolean {
-        return p.getMetadata("globalDice")[0].value() as Boolean
+        return try {
+            p.getMetadata("globalDice")[0].value() as Boolean
+        }catch(e: Exception) {
+            false
+        }
     }
 
 }

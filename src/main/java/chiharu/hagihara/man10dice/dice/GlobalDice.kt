@@ -17,18 +17,23 @@ object GlobalDice {
 
         if (!canDice(p, number)) return
 
-        val result = rollDice(number.toInt())
-
-        Bukkit.broadcastMessage("${prefix}&l${p.displayName}がダイスを振っています・・・&k&lxx".toColor())
+        if (isThereHasGlobalDiceFlagPlayer(p)) {
+            p.sendMessage("${prefix}&c現在ほかのプレイヤーがダイスを振っています。".toColor())
+            return
+        }
 
         Bukkit.getServer().onlinePlayers.forEach {
             if (isThereHasGlobalDiceFlagPlayer(it)) {
-                p.sendMessage("${prefix}&c現在ほかのプレイヤーがダイスを振っています。")
+                p.sendMessage("${prefix}&c現在ほかのプレイヤーがダイスを振っています。".toColor())
                 return
             }
         }
 
         setGlobalFlag(p, true)
+
+        val result = rollDice(number.toInt())
+
+        Bukkit.broadcastMessage("${prefix}&l${p.displayName}がダイスを振っています・・・&k&lxx".toColor())
 
         object : BukkitRunnable() {
             override fun run() {

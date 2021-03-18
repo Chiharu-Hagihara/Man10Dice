@@ -17,23 +17,29 @@ object LocalDice {
 
         if (!canDice(p, number)) return
 
-        val result = rollDice(number.toInt())
-
         val players = mutableListOf<Player>()
 
         p.getNearbyEntities(radius.toDouble(), radius.toDouble(), radius.toDouble()).forEach {
-            if (it !is Player) return
+            if (it !is Player) return@forEach
+            if (it == p) return@forEach
             players.add(it)
+        }
+
+        if (isThereHasLocalDiceFlagPlayer(p)) {
+            p.sendMessage("${prefix}&c現在ほかのプレイヤーがダイスを振っています。".toColor())
+            return
         }
 
         players.forEach {
             if (isThereHasLocalDiceFlagPlayer(it)) {
-                p.sendMessage("${prefix}&c現在ほかのプレイヤーがダイスを振っています。")
+                p.sendMessage("${prefix}&c現在ほかのプレイヤーがダイスを振っています。".toColor())
                 return
             }
         }
 
         setLocalFlag(p, true)
+
+        val result = rollDice(number.toInt())
 
         p.sendMessage("${prefix}&l${p.displayName}がダイスを振っています・・・&k&lxx".toColor())
 
