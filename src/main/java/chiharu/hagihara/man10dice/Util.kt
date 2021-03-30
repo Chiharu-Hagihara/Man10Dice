@@ -1,8 +1,7 @@
 package chiharu.hagihara.man10dice
 
 import chiharu.hagihara.man10dice.Man10Dice.Companion.plugin
-import chiharu.hagihara.man10dice.Man10Dice.Companion.prefix
-import com.github.syari.spigot.api.util.string.toColor
+import com.github.syari.spigot.api.string.toColor
 import net.md_5.bungee.api.chat.ClickEvent
 import net.md_5.bungee.api.chat.ComponentBuilder
 import net.md_5.bungee.api.chat.HoverEvent
@@ -13,6 +12,8 @@ import java.util.*
 
 
 object Util {
+
+    val prefix = "&l[&d&lM&f&la&a&ln&f&l10&5&lDice&f&l]&f".toColor()
 
     val config = YamlConfiguration()
 

@@ -1,14 +1,14 @@
 package chiharu.hagihara.man10dice.dice
 
 import chiharu.hagihara.man10dice.Man10Dice.Companion.plugin
-import chiharu.hagihara.man10dice.Man10Dice.Companion.prefix
 import chiharu.hagihara.man10dice.Util
 import chiharu.hagihara.man10dice.Util.canDice
+import chiharu.hagihara.man10dice.Util.prefix
 import chiharu.hagihara.man10dice.Util.rollDice
+import chiharu.hagihara.man10dice.Util.sendSuggestCommand
 import com.github.syari.spigot.api.scheduler.runTask
-import com.github.syari.spigot.api.util.string.toColor
+import com.github.syari.spigot.api.string.toColor
 import org.bukkit.Bukkit
-import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
@@ -18,8 +18,7 @@ object AdminDice {
     var nowAD = false
 
     val DMap: ConcurrentHashMap<Int, UUID> = ConcurrentHashMap()
-    var host: CommandSender? = null
-    var hostname: String? = null
+    var host: Player? = null
     var Dmax = 0
     var thereisWinner = false
 
@@ -27,11 +26,74 @@ object AdminDice {
 
         if (!canDice(p, number)) return
 
+        if (nowAD) {
+            p.sendMessage("${prefix}&c現在ほかの方がAdminDiceを開催しています。".toColor())
+            return
+        }
+
         val result = rollDice(number.toInt())
 
         plugin.runTask(true) {
 
-            Thread.sleep(60 *1000)
+            nowAD = true
+            Dmax = number.toInt()
+            host = p
+
+            if (host == null) {
+                cancelAD()
+                return@runTask
+            }
+
+            host!!.sendMessage("${prefix}&a${Dmax}Dを開催しました。".toColor())
+
+            for (player in Bukkit.getOnlinePlayers()) {
+                player.sendMessage("""
+${prefix}${host!!.name}&d&lが&e&l${Dmax}D&d&lを開催しました！
+${prefix}&a&l/mdice answer <number> で回答することができます。
+                        """.trimIndent().toColor())
+                sendSuggestCommand(player, "&c&l[ここをクリックで自動補完します]".toColor(), "&a&lClick me!", "/mdice answer ")
+            }
+
+            Bukkit.broadcastMessage("${prefix}&e&lAdminDice回答募集終了まで残り1分です！".toColor())
+
+            Thread.sleep(30 * 1000)
+
+            Bukkit.broadcastMessage("${prefix}&e&lAdminDice回答募集終了まで残り30秒です！".toColor())
+
+            Thread.sleep(10 *1000)
+
+            Bukkit.broadcastMessage("${prefix}&e&lAdminDice回答募集終了まで残り20秒です！".toColor())
+
+            Thread.sleep(10 * 1000)
+
+            Bukkit.broadcastMessage("${prefix}&e&lAdminDice回答募集終了まで残り10秒です！".toColor())
+
+            Thread.sleep(5 * 1000)
+
+            Bukkit.broadcastMessage("${prefix}&e&lAdminDice回答募集終了まで・・・".toColor())
+            Bukkit.broadcastMessage("${prefix}&e&l  &n5".toColor())
+
+            Thread.sleep(1000)
+
+            Bukkit.broadcastMessage("${prefix}&e&l  &n4".toColor())
+
+            Thread.sleep(1000)
+
+            Bukkit.broadcastMessage("${prefix}&e&l  &n3".toColor())
+
+            Thread.sleep(1000)
+
+            Bukkit.broadcastMessage("${prefix}&e&l  &n2".toColor())
+
+            Thread.sleep(1000)
+
+            Bukkit.broadcastMessage("${prefix}&e&l  &n1".toColor())
+
+            Thread.sleep(1000)
+
+            Bukkit.broadcastMessage("${prefix}&e&l&n回答を締め切りました！".toColor())
+
+            Thread.sleep(3 * 1000)
 
             Bukkit.broadcastMessage("${prefix}&l${p.displayName}がダイスを振っています・・・&k&lxx".toColor())
 

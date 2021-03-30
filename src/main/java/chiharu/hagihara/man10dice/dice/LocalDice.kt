@@ -1,34 +1,45 @@
 package chiharu.hagihara.man10dice.dice
 
+import chiharu.hagihara.man10dice.DiceFlag.isThereHasLocalDiceFlagPlayer
+import chiharu.hagihara.man10dice.DiceFlag.setLocalFlag
 import chiharu.hagihara.man10dice.Man10Dice.Companion.plugin
-import chiharu.hagihara.man10dice.Man10Dice.Companion.prefix
 import chiharu.hagihara.man10dice.Man10Dice.Companion.radius
 import chiharu.hagihara.man10dice.Util.canDice
+import chiharu.hagihara.man10dice.Util.prefix
 import chiharu.hagihara.man10dice.Util.rollDice
-import com.github.syari.spigot.api.util.string.toColor
-import org.bukkit.entity.Entity
+import com.github.syari.spigot.api.string.toColor
 import org.bukkit.entity.Player
 import org.bukkit.scheduler.BukkitRunnable
-import java.util.*
 
 object LocalDice {
-
-    var nowLD = HashMap<UUID, Boolean>()
 
     fun localDice(p: Player, number: String) {
 
         if (!canDice(p, number)) return
 
-        val result = rollDice(number.toInt())
+        val players = mutableListOf<Player>()
 
-        nowLD[p.uniqueId] = true
-
-        val players = mutableListOf<Entity>()
-
-        for (player in p.getNearbyEntities(radius.toDouble(), radius.toDouble(), radius.toDouble())) {
-            if (player !is Player) return
-            players.add(player)
+        p.getNearbyEntities(radius.toDouble(), radius.toDouble(), radius.toDouble()).forEach {
+            if (it !is Player) return@forEach
+            if (it == p) return@forEach
+            players.add(it)
         }
+
+        if (isThereHasLocalDiceFlagPlayer(p)) {
+            p.sendMessage("${prefix}&c現在ほかのプレイヤーがダイスを振っています。".toColor())
+            return
+        }
+
+        players.forEach {
+            if (isThereHasLocalDiceFlagPlayer(it)) {
+                p.sendMessage("${prefix}&c現在ほかのプレイヤーがダイスを振っています。".toColor())
+                return
+            }
+        }
+
+        setLocalFlag(p, true)
+
+        val result = rollDice(number.toInt())
 
         p.sendMessage("${prefix}&l${p.displayName}がダイスを振っています・・・&k&lxx".toColor())
 
@@ -40,11 +51,11 @@ object LocalDice {
             override fun run() {
                 p.sendMessage(("${prefix}&3&l${p.displayName}&3&lは&e&l${number}&3&l面サイコロを振って&e&l${result}&3&lが出た".toColor()))
 
-                for (i in 0 until players.size) {
-                    players[i].sendMessage(("${prefix}&3&l${p.displayName}&3&lは&e&l${number}&3&l面サイコロを振って&e&l${result}&3&lが出た".toColor()))
+                players.forEach {
+                    it.sendMessage(("${prefix}&3&l${p.displayName}&3&lは&e&l${number}&3&l面サイコロを振って&e&l${result}&3&lが出た".toColor()))
                 }
 
-                nowLD.remove(p.uniqueId)
+                setLocalFlag(p, false)
             }
         }.runTaskLater(plugin, 20 * 3)
     }
