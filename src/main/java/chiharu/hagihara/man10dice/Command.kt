@@ -44,7 +44,7 @@ object Command {
                     }
 
                     "reload" -> {
-                        if (!hasPerm(p, "mdice.op")) return@execute
+                        if (!p.hasPerm("mdice.op")) return@execute
 
                         reloadConfig()
 
@@ -56,7 +56,7 @@ object Command {
                     }
 
                     "global" -> {
-                        if (!hasPerm(p, "mdice.global")) return@execute
+                        if (!p.hasPerm("mdice.global")) return@execute
 
                         if (args.size != 2) {
                             p.sendMessage("${prefix}&c引数が誤っています。".toColor())
@@ -68,7 +68,7 @@ object Command {
                     }
 
                     "local" -> {
-                        if (!hasPerm(p, "mdice.local")) return@execute
+                        if (!p.hasPerm("mdice.local")) return@execute
 
                         if (args.size != 2) {
                             p.sendMessage("${prefix}&c引数が間違っています。".toColor())
@@ -80,7 +80,7 @@ object Command {
                     }
 
                     "admin" -> {
-                        if (!hasPerm(p, "mdice.admin")) return@execute
+                        if (!p.hasPerm("mdice.admin")) return@execute
 
                         if (args.size != 2) {
                             p.sendMessage("${prefix}&c引数が間違っています。".toColor())
