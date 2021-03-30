@@ -58,11 +58,7 @@ ${prefix}Created by Chiharu-Hagihara
     }
 
     fun isNumber(target: String): Boolean {
-        try {
-            target.toInt()
-        } catch (ex: NumberFormatException) {
-            return false
-        }
+        target.toIntOrNull() ?: return false
         return true
     }
 
