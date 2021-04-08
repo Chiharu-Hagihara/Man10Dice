@@ -8,6 +8,7 @@ import net.md_5.bungee.api.chat.HoverEvent
 import net.md_5.bungee.api.chat.hover.content.Text
 import org.bukkit.configuration.file.YamlConfiguration
 import org.bukkit.entity.Player
+import java.security.SecureRandom
 import java.util.*
 
 
@@ -19,8 +20,7 @@ object Util {
 
 
     fun rollDice(number: Int): Int {
-        val r = Random()
-        return r.nextInt(number - 1 + 1) + 1
+        return SecureRandom.getInstance("NativePRNGNonBlocking").nextInt(number) + 1
     }
 
 
@@ -66,13 +66,13 @@ ${prefix}Created by Chiharu-Hagihara
         plugin.reloadConfig()
     }
 
-    fun hasPerm(player: Player, perm: String): Boolean {
-        if (player.hasPermission(perm)) {
-            return true
-        }
+    fun Player.hasPerm(perm: String): Boolean {
+        return if (this.hasPermission(perm)) true
 
-        player.sendMessage("${prefix}&cあなたは権限を持っていません。".toColor())
-        return false
+        else {
+            this.sendMessage("${prefix}&cあなたは権限を持っていません。".toColor())
+            false
+        }
     }
 
     fun sendSuggestCommand(p: Player, text: String?, hoverText: String?, command: String?) {
