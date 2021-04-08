@@ -20,8 +20,7 @@ object Util {
 
 
     fun rollDice(number: Int): Int {
-        val r = SecureRandom()
-        return r.nextInt(number) + 1
+        return SecureRandom.getInstance("NativePRNGNonBlocking").nextInt(number) + 1
     }
 
 
