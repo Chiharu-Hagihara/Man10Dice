@@ -95,11 +95,11 @@ object AdminDice {
 
             Thread.sleep(3 * 1000)
             
-            sendBroadCast("&l${p.displayName}がダイスを振っています・・・&k&lxx")
+            sendBroadCast("&l${p.displayName()}がダイスを振っています・・・&k&lxx")
             
             Thread.sleep(5 *1000)
 
-            sendBroadCast("&3&l${p.displayName}&3&lは&e&l${number}&3&l面サイコロを振って&e&l${result}&3&lが出た")
+            sendBroadCast("&3&l${p.displayName()}&3&lは&e&l${number}&3&l面サイコロを振って&e&l${result}&3&lが出た")
 
             Thread.sleep(1 *1000)
 
@@ -111,7 +111,8 @@ object AdminDice {
                 val winner = DMap[result]
 
                 if (winner != null) {
-                    val winnerName: String = winner.let { Bukkit.getPlayer(it)?.displayName ?: return@runTask }
+                    // winner.let { Bukkit.getPlayer(it)?.displayName() ?: return@runTask }
+                    val winnerName: String = Bukkit.getPlayer(winner)?.displayName().toString()
                     sendBroadCast("&e&l&n${winnerName}&5&l&nはピッタリで当てました！！ｷﾀ――(ﾟ∀ﾟ)――!!")
                 }
 
@@ -122,7 +123,7 @@ object AdminDice {
                 val winner = DMap[result + 1]
 
                 if (winner != null) {
-                    val winnerName: String? = winner.let { Bukkit.getPlayer(it)?.displayName ?: return@runTask }
+                    val winnerName: String = Bukkit.getPlayer(winner)?.displayName().toString()
                     sendBroadCast("&e&l&n${winnerName}&2&lは1多い誤差で当てました！！")
                 }
 
@@ -133,7 +134,7 @@ object AdminDice {
                 val winner = DMap[result - 1]
 
                 if (winner != null) {
-                    val winnerName: String = winner.let { Bukkit.getPlayer(it)?.displayName ?: return@runTask }
+                    val winnerName: String = Bukkit.getPlayer(winner)?.displayName().toString()
                     sendBroadCast("&e&l&n${winnerName}&2&lは1少ない誤差で当てました！！")
                 }
 
@@ -186,7 +187,7 @@ object AdminDice {
 
         DMap[answer] = p.uniqueId
         p.sendMsg("&e&l${answer}&a&lと回答しました。")
-        host!!.sendMsg("&e&l${p.displayName}&a&lが&e&l${answer}&a&lと回答しました。")
+        host!!.sendMsg("&e&l${p.displayName()}&a&lが&e&l${answer}&a&lと回答しました。")
     }
 
     fun cancelAD(){
