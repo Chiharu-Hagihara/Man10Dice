@@ -2,14 +2,15 @@ package chiharu.hagihara.man10dice
 
 import chiharu.hagihara.man10dice.Man10Dice.Companion.plugin
 import com.github.syari.spigot.api.string.toColor
+import net.kyori.adventure.text.Component
 import net.md_5.bungee.api.chat.ClickEvent
 import net.md_5.bungee.api.chat.ComponentBuilder
 import net.md_5.bungee.api.chat.HoverEvent
 import net.md_5.bungee.api.chat.hover.content.Text
+import org.bukkit.Bukkit
 import org.bukkit.configuration.file.YamlConfiguration
 import org.bukkit.entity.Player
 import java.security.SecureRandom
-import java.util.*
 
 
 object Util {
@@ -23,35 +24,37 @@ object Util {
         return SecureRandom.getInstance("NativePRNGNonBlocking").nextInt(number) + 1
     }
 
+    fun Player.sendMsg(msg: String) {
+        this.sendMessage(Component.text(prefix + msg.toColor()))
+    }
+
 
     fun showHelp(player: Player) {
-        player.sendMessage("""
-${prefix}&e==============ヘルプ==============
-${prefix}/mdice local [数字] : 結果を設定された半径のなかにいるプレイヤーに通知します。
-${prefix}/mdice global [数字] : 結果を全体チャットで通知します。
-${prefix}/mdice admin [数字] : Adminの振るダイスの結果を言い当てるゲームです。
-${prefix}/mdice answer [数字] : AdminDiceの回答をします。
-${prefix}/mdice admin cancel : AdminDiceをキャンセルできます。
-${prefix}/mdice reload : Configをリロードします。
-${prefix}&e=================================
-${prefix}Latest update on 2021/3/14
-${prefix}Created by Chiharu-Hagihara
-        """.trimIndent().toColor())
+        player.sendMsg("&e==============ヘルプ==============")
+        player.sendMsg("/mdice local [数字] : 結果を設定された半径のなかにいるプレイヤーに通知します。")
+        player.sendMsg("/mdice global [数字] : 結果を全体チャットで通知します。")
+        player.sendMsg("/mdice admin [数字] : Adminの振るダイスの結果を言い当てるゲームです。")
+        player.sendMsg("/mdice answer [数字] : AdminDiceの回答をします。")
+        player.sendMsg("/mdice admin cancel : AdminDiceをキャンセルできます。")
+        player.sendMsg("/mdice reload : Configをリロードします。")
+        player.sendMsg("&e=================================")
+        player.sendMsg("Latest update on 2021/3/14")
+        player.sendMsg("Created by Chiharu-Hagihara")
     }
 
     fun canDice(player: Player, number: String): Boolean {
         if (!(isNumber(number))) {
-            player.sendMessage("${prefix}&c数字を入力してください。".toColor())
+            player.sendMsg("&c数字を入力してください。")
             return false
         }
 
         if (number.toInt() < 0) {
-            player.sendMessage("${prefix}&c0より大きい数字を入力してください。".toColor())
+            player.sendMsg("&c0より大きい数字を入力してください。")
             return false
         }
 
         if (number.toInt() > 2147483647) {
-            player.sendMessage("${prefix}&c2147483647より小さい数字を入力してください。".toColor())
+            player.sendMsg("&c2147483647より小さい数字を入力してください。")
             return false
         }
         return true
@@ -70,7 +73,7 @@ ${prefix}Created by Chiharu-Hagihara
         return if (this.hasPermission(perm)) true
 
         else {
-            this.sendMessage("${prefix}&cあなたは権限を持っていません。".toColor())
+            this.sendMsg("&cあなたは権限を持っていません。")
             false
         }
     }
@@ -93,5 +96,11 @@ ${prefix}Created by Chiharu-Hagihara
         }
         val message = ComponentBuilder(text).event(hoverEvent).event(clickEvent).create()
         p.spigot().sendMessage(*message)
+    }
+
+    fun sendBroadCast(msg: String) {
+        Bukkit.getOnlinePlayers().forEach {
+            it.sendMsg(msg)
+        }
     }
 }

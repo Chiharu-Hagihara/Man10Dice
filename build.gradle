@@ -23,9 +23,9 @@ repositories {
 }
 
 dependencies {
-    compileOnly 'com.destroystokyo.paper:paper-api:1.16.3-R0.1-SNAPSHOT'
+    compileOnly 'com.destroystokyo.paper:paper-api:1.16.5-R0.1-SNAPSHOT'
     compile "org.jetbrains.kotlin:kotlin-stdlib:1.4.30"
-    api('com.github.sya-ri:EasySpigotAPI:2.2.0') {
+    api('com.github.sya-ri:EasySpigotAPI:2.3.2') {
         exclude group: 'org.spigotmc', module: 'spigot-api'
     }
 }
@@ -46,7 +46,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.4.30"
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.5.10"
     }
     repositories {
         maven {
