@@ -3,10 +3,8 @@ package chiharu.hagihara.man10dice
 import chiharu.hagihara.man10dice.Man10Dice.Companion.plugin
 import com.github.syari.spigot.api.string.toColor
 import net.kyori.adventure.text.Component
-import net.md_5.bungee.api.chat.ClickEvent
-import net.md_5.bungee.api.chat.ComponentBuilder
-import net.md_5.bungee.api.chat.HoverEvent
-import net.md_5.bungee.api.chat.hover.content.Text
+import net.kyori.adventure.text.event.ClickEvent
+import net.kyori.adventure.text.event.HoverEvent
 import org.bukkit.Bukkit
 import org.bukkit.configuration.file.YamlConfiguration
 import org.bukkit.entity.Player
@@ -38,7 +36,7 @@ object Util {
         player.sendMsg("/mdice admin cancel : AdminDiceをキャンセルできます。")
         player.sendMsg("/mdice reload : Configをリロードします。")
         player.sendMsg("&e=================================")
-        player.sendMsg("Latest update on 2021/3/14")
+        player.sendMsg("Latest update on 2021/6/2")
         player.sendMsg("Created by Chiharu-Hagihara")
     }
 
@@ -78,24 +76,20 @@ object Util {
         }
     }
 
-    fun sendSuggestCommand(p: Player, text: String?, hoverText: String?, command: String?) {
+    fun Player.sendHoverText(msg: String, hover: String, cmd: String) {
+        val message = Component.text(msg)
+            .hoverEvent(HoverEvent.showText(Component.text(hover)))
+            .clickEvent(ClickEvent.runCommand(cmd))
 
-        //////////////////////////////////////////
-        //      ホバーテキストとイベントを作成する
-        var hoverEvent: HoverEvent? = null
-        if (hoverText != null) {
-            val hover = Text(hoverText)
-            hoverEvent = HoverEvent(HoverEvent.Action.SHOW_TEXT, hover)
-        }
+        this.sendMessage(message)
+    }
 
-        //////////////////////////////////////////
-        //   クリックイベントを作成する
-        var clickEvent: ClickEvent? = null
-        if (command != null) {
-            clickEvent = ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, command)
-        }
-        val message = ComponentBuilder(text).event(hoverEvent).event(clickEvent).create()
-        p.spigot().sendMessage(*message)
+    fun Player.sendSuggestCommand(msg: String, hover: String, suggest: String) {
+        val message = Component.text(msg)
+            .hoverEvent(HoverEvent.showText(Component.text(hover)))
+            .clickEvent(ClickEvent.suggestCommand(suggest))
+
+        this.sendMessage(message)
     }
 
     fun sendBroadCast(msg: String) {
