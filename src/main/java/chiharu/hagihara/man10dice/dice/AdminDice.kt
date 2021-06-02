@@ -23,6 +23,7 @@ object AdminDice {
     var host: Player? = null
     var Dmax = 0
     var thereisWinner = false
+    var canAnswer = false
 
     fun adminDice(p: Player, number: String) {
 
@@ -38,6 +39,7 @@ object AdminDice {
         plugin.runTask(true) {
 
             nowAD = true
+            canAnswer = true
             Dmax = number.toInt()
             host = p
 
@@ -51,7 +53,7 @@ object AdminDice {
             for (player in Bukkit.getOnlinePlayers()) {
                 player.sendMsg("${host!!.name}&d&lが&e&l${Dmax}D&d&lを開催しました！")
                 player.sendMsg("&a&l/mdice answer <number> で回答することができます。")
-                sendSuggestCommand(player, "&c&l[ここをクリックで自動補完します]".toColor(), "&a&lClick me!", "/mdice answer ")
+                player.sendSuggestCommand("&c&l[ここをクリックで自動補完します]".toColor(), "&a&lClick me!".toColor(), "/mdice answer ")
             }
 
             sendBroadCast("&e&lAdminDice回答募集終了まで残り1分です！")
@@ -93,13 +95,15 @@ object AdminDice {
 
             sendBroadCast("${prefix}&e&l&n回答を締め切りました！")
 
+            canAnswer = false
+
             Thread.sleep(3 * 1000)
             
-            sendBroadCast("&l${p.displayName}がダイスを振っています・・・&k&lxx")
+            sendBroadCast("&l${p.name}がダイスを振っています・・・&k&lxx")
             
             Thread.sleep(5 *1000)
 
-            sendBroadCast("&3&l${p.displayName}&3&lは&e&l${number}&3&l面サイコロを振って&e&l${result}&3&lが出た")
+            sendBroadCast("&3&l${p.name}&3&lは&e&l${number}&3&l面サイコロを振って&e&l${result}&3&lが出た")
 
             Thread.sleep(1 *1000)
 
@@ -111,7 +115,8 @@ object AdminDice {
                 val winner = DMap[result]
 
                 if (winner != null) {
-                    val winnerName: String = winner.let { Bukkit.getPlayer(it)?.displayName ?: return@runTask }
+                    // winner.let { Bukkit.getPlayer(it)?.displayName() ?: return@runTask }
+                    val winnerName: String = Bukkit.getPlayer(winner)?.name!!
                     sendBroadCast("&e&l&n${winnerName}&5&l&nはピッタリで当てました！！ｷﾀ――(ﾟ∀ﾟ)――!!")
                 }
 
@@ -122,7 +127,7 @@ object AdminDice {
                 val winner = DMap[result + 1]
 
                 if (winner != null) {
-                    val winnerName: String? = winner.let { Bukkit.getPlayer(it)?.displayName ?: return@runTask }
+                    val winnerName: String = Bukkit.getPlayer(winner)?.name!!
                     sendBroadCast("&e&l&n${winnerName}&2&lは1多い誤差で当てました！！")
                 }
 
@@ -133,7 +138,7 @@ object AdminDice {
                 val winner = DMap[result - 1]
 
                 if (winner != null) {
-                    val winnerName: String = winner.let { Bukkit.getPlayer(it)?.displayName ?: return@runTask }
+                    val winnerName: String = Bukkit.getPlayer(winner)?.name!!
                     sendBroadCast("&e&l&n${winnerName}&2&lは1少ない誤差で当てました！！")
                 }
 
@@ -154,6 +159,11 @@ object AdminDice {
     fun answerAdminDice(p: Player, number: String) {
         if (!nowAD) {
             p.sendMsg("&c現在はAdminDiceが開催されていません。")
+            return
+        }
+
+        if (!canAnswer) {
+            p.sendMsg("&cすでに回答を締め切っています。")
             return
         }
 
@@ -186,7 +196,7 @@ object AdminDice {
 
         DMap[answer] = p.uniqueId
         p.sendMsg("&e&l${answer}&a&lと回答しました。")
-        host!!.sendMsg("&e&l${p.displayName}&a&lが&e&l${answer}&a&lと回答しました。")
+        host!!.sendMsg("&e&l${p.displayName()}&a&lが&e&l${answer}&a&lと回答しました。")
     }
 
     fun cancelAD(){

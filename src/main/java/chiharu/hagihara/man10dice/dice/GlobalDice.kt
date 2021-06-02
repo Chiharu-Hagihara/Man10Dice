@@ -33,11 +33,11 @@ object GlobalDice {
 
         val result = rollDice(number.toInt())
 
-        sendBroadCast("&l${p.displayName}がダイスを振っています・・・&k&lxx")
+        sendBroadCast("&l${p.name}がダイスを振っています・・・&k&lxx")
 
         object : BukkitRunnable() {
             override fun run() {
-                sendBroadCast("&3&l${p.displayName}&3&lは&e&l${number}&3&l面サイコロを振って&e&l${result}&3&lが出た")
+                sendBroadCast("&3&l${p.name}&3&lは&e&l${number}&3&l面サイコロを振って&e&l${result}&3&lが出た")
                 setGlobalFlag(p, false)
             }
         }.runTaskLater(plugin, 20 * 3)

@@ -24,7 +24,7 @@ repositories {
 
 dependencies {
     compileOnly 'com.destroystokyo.paper:paper-api:1.16.5-R0.1-SNAPSHOT'
-    compile "org.jetbrains.kotlin:kotlin-stdlib:1.4.30"
+    compile "org.jetbrains.kotlin:kotlin-stdlib:1.5.10"
     api('com.github.sya-ri:EasySpigotAPI:2.3.2') {
         exclude group: 'org.spigotmc', module: 'spigot-api'
     }

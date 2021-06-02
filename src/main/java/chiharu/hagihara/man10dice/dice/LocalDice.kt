@@ -6,7 +6,6 @@ import chiharu.hagihara.man10dice.Man10Dice.Companion.plugin
 import chiharu.hagihara.man10dice.Man10Dice.Companion.radius
 import chiharu.hagihara.man10dice.Util.canDice
 import chiharu.hagihara.man10dice.Util.rollDice
-import chiharu.hagihara.man10dice.Util.sendBroadCast
 import chiharu.hagihara.man10dice.Util.sendMsg
 import org.bukkit.entity.Player
 import org.bukkit.scheduler.BukkitRunnable
@@ -41,18 +40,19 @@ object LocalDice {
 
         val result = rollDice(number.toInt())
 
-        p.sendMsg("&l${p.displayName}がダイスを振っています・・・&k&lxx")
+        p.sendMsg("&l${p.name}がダイスを振っています・・・&k&lxx")
 
         for (i in 0 until players.size) {
-            players[i].sendMsg("&l${p.displayName}がダイスを振っています・・・&k&lxx")
+            players[i].sendMsg("&l${p.name}がダイスを振っています・・・&k&lxx")
         }
 
         object : BukkitRunnable() {
             override fun run() {
-                p.sendMsg("&3&l${p.displayName}&3&lは&e&l${number}&3&l面サイコロを振って&e&l${result}&3&lが出た")
+                p.sendMsg("&3&l${p.name}&3&lは&e&l${number}&3&l面サイコロを振って&e&l${result}&3&lが出た")
 
-                    sendBroadCast("&3&l${p.displayName}&3&lは&e&l${number}&3&l面サイコロを振って&e&l${result}&3&lが出た")
-
+                for (i in 0 until players.size) {
+                    players[i].sendMsg("&3&l${p.name}&3&lは&e&l${number}&3&l面サイコロを振って&e&l${result}&3&lが出た")
+                }
 
                 setLocalFlag(p, false)
             }
